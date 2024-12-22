@@ -2,7 +2,6 @@ from django.views import View
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
-import cv2
 import numpy as np
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
