@@ -1,1 +1,1 @@
-web: python manage.py collectstatic --no-input && gunicorn waste_detection.wsgi --log-file -
+web: python manage.py collectstatic --noinput && gunicorn waste_detection.wsgi --log-level debug
