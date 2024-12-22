@@ -1,0 +1,7 @@
+venv
+__pycache__
+waste_detection_db.sqlite3
+
+staticfiles
+migrations
+.env
