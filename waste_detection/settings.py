@@ -158,6 +158,7 @@ if USE_S3:
     MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/'
     DEFAULT_FILE_STORAGE = 'waste_detection.storage_backends.MediaStorage'
 
+
     # S3 CORS Configuration
     AWS_S3_CORS_CONFIGURATION = {
         'CORSRules': [{
