@@ -15,6 +15,69 @@ from django.core.files.base import ContentFile
 import os
 from apps.security.forms.profileForm import UserProfileForm
 from apps.security.models import User
+from django.core.files.storage import default_storage
+from django.core.exceptions import ValidationError
+from PIL import Image
+import io
+import uuid
+
+def validate_profile_image(image):
+    """
+    Valida la imagen de perfil
+    """
+    # Validar tamaño máximo (5MB)
+    if image.size > 5 * 1024 * 1024:
+        raise ValidationError('La imagen no debe superar 5MB')
+    
+    # Validar formato
+    valid_formats = {'image/jpeg', 'image/png', 'image/gif', 'image/webp'}
+    if image.content_type not in valid_formats:
+        raise ValidationError('Formato no válido. Use JPEG, PNG, GIF o WEBP')
+    
+    return True
+
+def process_profile_image(image_file):
+    """
+    Procesa y guarda la imagen de perfil
+    """
+    try:
+        # Validar imagen
+        validate_profile_image(image_file)
+        
+        # Abrir imagen con Pillow
+        img = Image.open(image_file)
+        
+        # Convertir a RGB si es necesario
+        if img.mode not in ('RGB', 'RGBA'):
+            img = img.convert('RGB')
+        
+        # Redimensionar manteniendo proporción
+        max_size = (400, 400)
+        img.thumbnail(max_size, Image.LANCZOS)
+        
+        # Guardar imagen procesada
+        output = io.BytesIO()
+        
+        # Determinar formato de salida
+        save_format = 'JPEG'
+        if image_file.content_type == 'image/png':
+            save_format = 'PNG'
+        
+        # Guardar al buffer
+        img.save(output, format=save_format, quality=85)
+        output.seek(0)
+        
+        # Generar nombre único
+        ext = '.jpg' if save_format == 'JPEG' else '.png'
+        unique_filename = f"profile_pictures/{uuid.uuid4()}{ext}"
+        
+        # Guardar en B2
+        saved_path = default_storage.save(unique_filename, output)
+        
+        return saved_path
+        
+    except Exception as e:
+        raise ValidationError(f'Error procesando la imagen: {str(e)}')
 
 class LoginView(View):
     template_name = 'security/auth/login.html'
@@ -93,28 +156,39 @@ class ProfileView(LoginRequiredMixin, DetailView):
         return context
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
-    """Vista para actualizar el perfil de usuario"""
     model = User
     form_class = UserProfileForm
     template_name = 'security/auth/profile_edit.html'
     success_url = reverse_lazy('security:profile')
     
     def get_object(self, queryset=None):
-        """Retorna el usuario actual"""
         return self.request.user
     
     def form_valid(self, form):
-        """Si el formulario es válido, guarda los cambios y muestra un mensaje"""
-        messages.success(self.request, 'Perfil actualizado exitosamente.')
-        return super().form_valid(form)
-    
+        try:
+            # Manejar la imagen de perfil si se proporciona una nueva
+            if 'avatar' in self.request.FILES:
+                # Borrar imagen anterior si existe
+                if self.request.user.avatar:
+                    default_storage.delete(self.request.user.avatar.name)
+                
+                # Procesar y guardar nueva imagen
+                avatar_path = process_profile_image(self.request.FILES['avatar'])
+                form.instance.avatar = avatar_path
+            
+            response = super().form_valid(form)
+            messages.success(self.request, 'Perfil actualizado exitosamente.')
+            return response
+            
+        except ValidationError as e:
+            messages.error(self.request, str(e))
+            return super().form_invalid(form)
+        
     def form_invalid(self, form):
-        """Si el formulario es inválido, muestra un mensaje de error"""
         messages.error(self.request, 'Por favor corrige los errores en el formulario.')
         return super().form_invalid(form)
 
     def get_context_data(self, **kwargs):
-        """Añade datos adicionales al contexto"""
         context = super().get_context_data(**kwargs)
         context['title'] = 'Actualizar Perfil'
         context['user_points'] = self.request.user.get_total_points()
