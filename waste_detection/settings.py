@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django_filters',
     'storages',
     'corsheaders',
+    'django_backblaze_b2',
     
     # Local apps
     'apps.security',
@@ -122,12 +123,17 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 WHITENOISE_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-AWS_S3_ENDPOINT_URL = 'https://s3.us-east-005.backblazeb2.com'
-AWS_ACCESS_KEY_ID = 'fc3c9338e457'
-AWS_SECRET_ACCESS_KEY = '005c15dc686d5425c6dc231c2e4295be623346770d'
-AWS_STORAGE_BUCKET_NAME = 'app-waste-detection'
-AWS_QUERYSTRING_AUTH = False
+# Configuración de Backblaze B2
+BACKBLAZE_CONFIG = {
+    'application_key_id': 'fc3c9338e457',  # Tu Application Key ID
+    'application_key': '0055443cfce197ea9bc3317fe27a9186f08b71a419',        # Tu Application Key
+    'bucket_name': 'app-waste-detection',           # Nombre del bucket en B2
+    'bucket_id': '6facf3ac19b3e3f89e340517',        # ID del bucket
+}
+
+# Establece el backend de almacenamiento predeterminado
+DEFAULT_FILE_STORAGE = 'django_backblaze_b2.BackblazeB2Storage'
+
 
 # Rest Framework settings
 REST_FRAMEWORK = {

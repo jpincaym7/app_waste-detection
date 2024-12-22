@@ -7,90 +7,6 @@ from django.core.paginator import Paginator
 from django.views.generic import TemplateView
 from django.views.decorators.http import require_http_methods
 from apps.gamification.models import TrashReport, ReportComment
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
-from django.core.exceptions import ValidationError
-from PIL import Image
-import io
-import uuid
-import logging
-from datetime import datetime
-
-logger = logging.getLogger(__name__)
-
-class TrashReportImageHandler:
-    def __init__(self):
-        self.allowed_formats = {'image/jpeg', 'image/png', 'image/webp'}
-        self.max_size = 10 * 1024 * 1024  # 10MB
-        
-    def process_and_save_image(self, image_file, user_id):
-        """
-        Procesa y guarda la imagen del reporte
-        """
-        try:
-            # Validar imagen
-            self.validate_image(image_file)
-            
-            # Abrir imagen con Pillow
-            img = Image.open(image_file)
-            
-            # Convertir a RGB si es necesario
-            if img.mode in ('RGBA', 'P'):
-                img = img.convert('RGB')
-            
-            # Redimensionar si es muy grande
-            max_dimension = 1920
-            if max(img.size) > max_dimension:
-                ratio = max_dimension / max(img.size)
-                new_size = tuple(int(dim * ratio) for dim in img.size)
-                img = img.resize(new_size, Image.LANCZOS)
-            
-            # Preparar para guardar
-            output = io.BytesIO()
-            img.save(output, format='JPEG', quality=85)
-            output.seek(0)
-            
-            # Generar nombre único
-            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-            filename = f"trash_reports/{user_id}/{timestamp}_{uuid.uuid4().hex[:8]}.jpg"
-            
-            # Guardar en B2
-            saved_path = default_storage.save(filename, ContentFile(output.getvalue()))
-            
-            return saved_path
-            
-        except Exception as e:
-            logger.error(f"Error processing report image: {str(e)}", exc_info=True)
-            raise ValidationError(f"Error procesando la imagen: {str(e)}")
-    
-    def validate_image(self, image_file):
-        """
-        Valida el formato y tamaño de la imagen
-        """
-        if not hasattr(image_file, 'content_type'):
-            raise ValidationError("Archivo de imagen inválido")
-        
-        if image_file.content_type not in self.allowed_formats:
-            raise ValidationError(f"Formato no soportado. Use: {', '.join(self.allowed_formats)}")
-        
-        if image_file.size > self.max_size:
-            raise ValidationError(f"La imagen excede el tamaño máximo de {self.max_size/1024/1024}MB")
-        
-        return True
-    
-    def delete_image(self, image_path):
-        """
-        Elimina una imagen del almacenamiento
-        """
-        try:
-            if image_path:
-                default_storage.delete(image_path)
-                return True
-        except Exception as e:
-            logger.error(f"Error deleting image {image_path}: {str(e)}", exc_info=True)
-            return False
-
-
 
 def haversine(lat1, lon1, lat2, lon2):
     """Calculate the great circle distance between two points on Earth."""
@@ -206,57 +122,27 @@ def trash_report_detail(request, pk):
 @require_http_methods(["POST"])
 def trash_report_create(request):
     """Vista para crear un nuevo reporte."""
-    image_handler = TrashReportImageHandler()
-    
     try:
-        # Validar que se haya enviado una imagen
-        if 'image' not in request.FILES:
+        image = request.FILES.get('image')
+        if not image:
             return HttpResponseBadRequest('La imagen es requerida')
         
-        # Procesar y guardar la imagen
-        try:
-            image_path = image_handler.process_and_save_image(
-                request.FILES['image'],
-                request.user.id
-            )
-        except ValidationError as e:
-            return HttpResponseBadRequest(str(e))
-        
-        # Crear el reporte
         report = TrashReport.objects.create(
             user=request.user,
             latitude=request.POST.get('latitude'),
             longitude=request.POST.get('longitude'),
-            image=image_path,
+            image=image,
             description=request.POST.get('description'),
             severity=request.POST.get('severity'),
             is_recurring=request.POST.get('is_recurring') == 'true'
         )
         
-        # Preparar respuesta con URL de la imagen
-        response_data = {
+        return JsonResponse({
             'id': report.id,
-            'message': 'Reporte creado exitosamente',
-            'image_url': default_storage.url(report.image.name)
-        }
-        
-        # Si el reporte está cerca de otros existentes, incluir esa información
-        nearby = TrashReport.objects.filter(
-            latitude__range=(float(report.latitude) - 0.01, float(report.latitude) + 0.01),
-            longitude__range=(float(report.longitude) - 0.01, float(report.longitude) + 0.01)
-        ).exclude(id=report.id)
-        
-        if nearby.exists():
-            response_data['nearby_reports'] = list(nearby.values('id', 'latitude', 'longitude'))
-        
-        return JsonResponse(response_data)
-        
+            'message': 'Reporte creado exitosamente'
+        })
     except Exception as e:
-        logger.error(f"Error creating trash report: {str(e)}", exc_info=True)
-        # Si algo falla, intentar limpiar la imagen si se llegó a guardar
-        if 'image_path' in locals():
-            image_handler.delete_image(image_path)
-        return HttpResponseBadRequest(f"Error creando el reporte: {str(e)}")
+        return HttpResponseBadRequest(str(e))
 
 @login_required
 @require_http_methods(["GET"])
