@@ -127,7 +127,7 @@ WHITENOISE_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 BACKBLAZE_CONFIG = {
     'application_key_id': '005fc3c9338e4570000000001',  # Tu Application Key ID
     'application_key': 'K005bIiyD3jC5UDnd7VLdVWPBZxGnBg',        # Tu Application Key
-    'bucket_name': 'app-waste-detection',           # Nombre del bucket en B2
+    'endpoint': 's3.us-east-005.backblazeb2.com',  # Nombre del bucket en B2
 }
 
 # Establece el backend de almacenamiento predeterminado
