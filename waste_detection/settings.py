@@ -184,3 +184,9 @@ LOGIN_REDIRECT_URL = '/'
 # Configuración de URL para logout
 LOGOUT_URL = '/security/logout/' 
 LOGOUT_REDIRECT_URL = '/' 
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+ALLOWED_HOSTS = ['localhost','web-production-558dc.up.railway.app']
+
+CSRF_TRUSTED_ORIGINS = ['http://*','https://web-production-558dc.up.railway.app']
