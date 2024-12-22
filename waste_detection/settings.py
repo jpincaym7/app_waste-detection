@@ -94,13 +94,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'waste_detection.wsgi.application'
 
-# Database
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL'),
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
+    'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
 }
 
 # Cache settings (using Railway Redis if available)
