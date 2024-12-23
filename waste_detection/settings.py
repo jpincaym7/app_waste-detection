@@ -22,8 +22,23 @@ USE_S3 = os.getenv('USE_S3', 'False') == 'True'
 # Allowed hosts should be set from environment variable
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,web-production-558dc.up.railway.app').split(',')
 
-# CSRF settings
-CSRF_TRUSTED_ORIGINS = ['http://*','https://web-production-558dc.up.railway.app/']
+CSRF_TRUSTED_ORIGINS = [
+    'https://web-production-558dc.up.railway.app'
+]
+
+# Update CORS settings to use only HTTPS in production
+CORS_ALLOWED_ORIGINS = [
+    'https://web-production-558dc.up.railway.app',
+    'http://localhost:3000',  # Keep for local development
+    'http://localhost:8000',  # Keep for local development
+]
+
+# Security settings adjustments
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+
 
 # Application definition
 INSTALLED_APPS = [
