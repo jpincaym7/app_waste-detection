@@ -29,6 +29,8 @@ class LocationHandler {
         const mapContainer = document.getElementById('map');
         if (mapContainer) {
             mapContainer.appendChild(locationControl);
+        } else {
+            console.warn('Map container not found');
         }
     }
     
@@ -110,7 +112,7 @@ class LocationHandler {
             this.map.userLocation = { latitude, longitude };
             
             // Trigger points reload with new location
-            await this.map.loadPoints();
+            await this.recyclingPointsMap.loadPoints();
             
         } catch (error) {
             this.handleError(error);
@@ -143,7 +145,7 @@ class LocationHandler {
                 break;
         }
         
-        this.map.showError(message);
+        this.recyclingPointsMap.showError(message);
         this.isTracking = false;
     }
     
@@ -172,7 +174,6 @@ class LocationHandler {
     }
 }
 
-
 class RecyclingPointsMap {
     constructor() {
         this.map = null;
@@ -181,17 +182,23 @@ class RecyclingPointsMap {
         this.userLocation = null;
         this.isMapExpanded = false;
         this.locationHandler = null;
+        this.apiBaseUrl = this.getSecureApiUrl();
         this.initializeMap();
         this.setupEventListeners();
+    }
 
-        this.map.on('load', () => {
-            this.locationHandler = new LocationHandler(this);
-        });
-
+    getSecureApiUrl() {
+        const currentUrl = window.location.href;
+        const baseUrl = currentUrl.split('/recycling_points')[0];
+        return baseUrl.replace('http:', 'https:') + '/recycling_points/api/recycling-points/';
     }
     
     async initializeMap() {
         try {
+            if (!MAPTILER_KEY) {
+                throw new Error('MapTiler API key not found');
+            }
+
             this.map = new maplibregl.Map({
                 container: 'map',
                 style: `https://api.maptiler.com/maps/streets/style.json?key=${MAPTILER_KEY}`,
@@ -222,7 +229,7 @@ class RecyclingPointsMap {
             
         } catch (error) {
             console.error('Map initialization error:', error);
-            this.showError('Error al inicializar el mapa');
+            this.showError('Error al inicializar el mapa: ' + error.message);
         }
     }
     
@@ -262,8 +269,11 @@ class RecyclingPointsMap {
     toggleMapSize() {
         const mapContainer = document.querySelector('.map-container');
         const toggleBtn = document.querySelector('.toggle-view-btn');
+        if (!mapContainer || !toggleBtn) return;
+
         const toggleText = toggleBtn.querySelector('.toggle-text');
         const toggleIcon = toggleBtn.querySelector('i');
+        if (!toggleText || !toggleIcon) return;
         
         this.isMapExpanded = !this.isMapExpanded;
         
@@ -308,7 +318,7 @@ class RecyclingPointsMap {
             await this.loadPoints();
             
         } catch (error) {
-            console.log('Could not get user location:', error);
+            console.error('Could not get user location:', error);
             this.showError('No se pudo obtener tu ubicación');
         }
     }
@@ -335,13 +345,21 @@ class RecyclingPointsMap {
         this.showLoading();
         
         try {
-            const response = await fetch(RECYCLING_POINTS_API_URL);
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const response = await fetch(this.apiBaseUrl, {
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
             const points = await response.json();
             
             if (this.userLocation) {
                 points.forEach(point => {
-                    point.distance = this.calculateDistance(point);
+                    point.distance = this.locationHandler.calculateDistance(point);
                 });
                 points.sort((a, b) => (a.distance || 999) - (b.distance || 999));
             }
@@ -364,15 +382,18 @@ class RecyclingPointsMap {
             
         } catch (error) {
             console.error('Error loading points:', error);
-            this.showError('No se pudieron cargar los puntos de reciclaje');
+            this.showError('No se pudieron cargar los puntos de reciclaje. Por favor, inténtalo de nuevo más tarde.');
         } finally {
             this.hideLoading();
         }
     }
     
     updateMarkers(points) {
+        // Remove existing markers
         this.markers.forEach(marker => marker.remove());
         this.markers = [];
+        
+        // Add new markers
         points.forEach(point => this.addMarker(point));
     }
     
@@ -390,13 +411,16 @@ class RecyclingPointsMap {
         el.addEventListener('click', () => this.showPointDetails(point));
         this.markers.push(marker);
         
-        // Store marker reference in point object for quick access
+        // Store marker reference in point object
         point.marker = marker;
     }
     
     updatePointsList(points) {
         const listContainer = document.getElementById('recyclingPointsList');
-        if (!listContainer) return;
+        if (!listContainer) {
+            console.warn('Recycling points list container not found');
+            return;
+        }
         
         listContainer.innerHTML = points.map(point => `
             <div class="recycling-point-card" data-point-id="${point.id}">
@@ -438,20 +462,26 @@ class RecyclingPointsMap {
     highlightMarker(point) {
         // Remove highlight from all markers
         this.markers.forEach(marker => {
-            marker.getElement().classList.remove('highlighted');
+            const element = marker.getElement();
+            if (element) {
+                element.classList.remove('highlighted');
+            }
         });
 
         // Add highlight to selected marker
         if (point.marker) {
-            point.marker.getElement().classList.add('highlighted');
-            
-            // Center map on point with padding for the details panel
-            this.map.flyTo({
-                center: [point.longitude, point.latitude],
-                zoom: 16,
-                padding: { bottom: this.isMapExpanded ? 0 : 300 },
-                duration: 1000
-            });
+            const element = point.marker.getElement();
+            if (element) {
+                element.classList.add('highlighted');
+                
+                // Center map on point with padding for the details panel
+                this.map.flyTo({
+                    center: [point.longitude, point.latitude],
+                    zoom: 16,
+                    padding: { bottom: this.isMapExpanded ? 0 : 300 },
+                    duration: 1000
+                });
+            }
         }
     }
     
@@ -459,16 +489,25 @@ class RecyclingPointsMap {
         if (!point) return;
         
         const detailsPanel = document.getElementById('pointDetails');
-        if (!detailsPanel) return;
+        if (!detailsPanel) {
+            console.warn('Details panel not found');
+            return;
+        }
         
-        // Update content
-        detailsPanel.querySelector('.point-name').textContent = point.name;
-        detailsPanel.querySelector('.point-address').innerHTML = `
-            <i class="fas fa-map-marker-alt"></i> ${point.address}
-        `;
+        const nameElement = detailsPanel.querySelector('.point-name');
+        const addressElement = detailsPanel.querySelector('.point-address');
+        const wasteTypesList = detailsPanel.querySelector('.waste-types-list');
+        const hoursElement = detailsPanel.querySelector('.opening-hours');
+        const contactElement = detailsPanel.querySelector('.contact-info');
+
+        if (nameElement) nameElement.textContent = point.name;
+        if (addressElement) {
+            addressElement.innerHTML = `
+                <i class="fas fa-map-marker-alt"></i> ${point.address}
+            `;
+        }
         
         // Update waste types with icons
-        const wasteTypesList = detailsPanel.querySelector('.waste-types-list');
         if (wasteTypesList) {
             wasteTypesList.innerHTML = (point.waste_types || []).map(type => `
                 <div class="waste-type-item">
@@ -479,7 +518,6 @@ class RecyclingPointsMap {
         }
         
         // Update opening hours with icon
-        const hoursElement = detailsPanel.querySelector('.opening-hours');
         if (hoursElement) {
             hoursElement.innerHTML = `
                 <i class="far fa-clock"></i>
@@ -488,7 +526,6 @@ class RecyclingPointsMap {
         }
         
         // Update contact info with icon
-        const contactElement = detailsPanel.querySelector('.contact-info');
         if (contactElement) {
             contactElement.innerHTML = `
                 <i class="fas fa-phone"></i>
@@ -517,7 +554,10 @@ class RecyclingPointsMap {
         
         // Remove marker highlight
         if (this.selectedPoint?.marker) {
-            this.selectedPoint.marker.getElement().classList.remove('highlighted');
+            const element = this.selectedPoint.marker.getElement();
+            if (element) {
+                element.classList.remove('highlighted');
+            }
         }
         
         this.selectedPoint = null;
@@ -534,8 +574,6 @@ class RecyclingPointsMap {
         window.open(url, '_blank');
     }
     
-
-    // Update calculateDistance method to use LocationHandler
     calculateDistance(point) {
         return this.locationHandler ? 
             this.locationHandler.calculateDistance(point) : 
@@ -557,19 +595,42 @@ class RecyclingPointsMap {
     }
     
     showError(message) {
-        Swal.fire({
-            title: 'Error',
-            text: message,
-            icon: 'error',
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000
-        });
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                title: 'Error',
+                text: message,
+                icon: 'error',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000
+            });
+        } else {
+            console.error(message);
+            alert(message);
+        }
     }
 }
 
 // Initialize map when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    window.map = new RecyclingPointsMap();
+    try {
+        window.map = new RecyclingPointsMap();
+    } catch (error) {
+        console.error('Error initializing map:', error);
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                title: 'Error',
+                text: 'Error al inicializar el mapa. Por favor, recarga la página.',
+                icon: 'error',
+                confirmButtonText: 'Recargar',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.reload();
+                }
+            });
+        } else {
+            alert('Error al inicializar el mapa. Por favor, recarga la página.');
+        }
+    }
 });
