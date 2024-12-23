@@ -74,31 +74,6 @@
         transition: all 0.3s ease;
     }
 
-    .create-report-btn {
-        position: fixed;
-        right: 1rem;
-        bottom: calc(var(--bottom-nav-height) + 4rem);
-        z-index: 40;
-        width: 3.5rem;
-        height: 3.5rem;
-        background: #16a34a;  /* green-600 */
-        color: white;
-        border-radius: 9999px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        transition: transform 0.2s ease;
-    }
-    
-    .create-report-btn:active {
-        transform: scale(0.95);
-    }
-    
-    .create-report-btn.map-active {
-        transform: translateY(-50vh);
-    }
-
     .report-card:active {
         transform: scale(0.98);
     }
@@ -208,6 +183,35 @@
         transform: scale(20);
         opacity: 0.3;
     }
+
+    .create-report-btn {
+        position: fixed;
+        right: 1rem;
+        bottom: calc(var(--bottom-nav-height) + 4rem);
+        z-index: 40;
+        width: 3.5rem;
+        height: 3.5rem;
+        background: #16a34a;  /* green-600 */
+        color: white;
+        border-radius: 9999px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        transition: transform 0.2s ease;
+    }
+    
+    .create-report-btn:active {
+        transform: scale(0.95);
+    }
+    
+    .create-report-btn.map-active {
+        transform: translateY(-50vh);
+    }
+
+    .report-card:active {
+        transform: scale(0.98);
+    }
 </style>
 {% endblock %}
 
@@ -227,11 +231,6 @@
             </div>
         </div>
     </header>
-
-    <a href="{% url 'gamification:report-form' %}" 
-        class="create-report-btn touch-feedback">
-            <i class="fas fa-plus text-xl"></i>
-    </a>
 
     <!-- View Container -->
     <div class="view-container">
@@ -302,6 +301,12 @@
             class="view-toggle p-3 bg-white rounded-full shadow-lg text-green-600">
         <i class="fas fa-map-marked-alt"></i>
     </button>
+
+    <a href="{% url 'gamification:report-form' %}" 
+        class="create-report-btn touch-feedback ">
+            <i class="fas fa-plus text-xl"></i>
+    </a>
+
 </div>
 {% endblock %}
 
