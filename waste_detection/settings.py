@@ -23,11 +23,7 @@ USE_S3 = os.getenv('USE_S3', 'False') == 'True'
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,web-production-558dc.up.railway.app').split(',')
 
 # CSRF settings
-CSRF_TRUSTED_ORIGINS = [
-    'https://web-production-558dc.up.railway.app',
-    'http://localhost',
-    'https://localhost'
-]
+CSRF_TRUSTED_ORIGINS = ['http://*','https://web-production-558dc.up.railway.app/']
 
 # Application definition
 INSTALLED_APPS = [
