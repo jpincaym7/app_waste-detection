@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'whitenoise.runserver_nostatic',
     # Third party apps
     'rest_framework',
     'rest_framework_simplejwt',
@@ -161,7 +162,7 @@ if USE_S3:
     # S3 Static Settings
     STATIC_LOCATION = 'static'
     STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
-    STATICFILES_STORAGE = 'waste_detection.storage_backends.StaticStorage'
+    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
     # S3 Media Settings
     MEDIA_LOCATION = 'media'
@@ -198,7 +199,8 @@ else:
     MEDIA_URL = '/media/'
     MEDIA_ROOT = BASE_DIR / 'media'
     # Configuración de Whitenoise
-    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    WHITENOISE_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Logging configuration
 LOGGING = {
