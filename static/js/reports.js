@@ -326,7 +326,7 @@ class TrashReportForm {
     
                 const data = await response.json();
                 this.showSuccess('¡Reporte enviado con éxito!');
-                setTimeout(() => window.location.href = `/gamification/reports/${data.id}/`, 1500);
+                setTimeout(() => window.location.href = `/gamification/reports/view/`, 1500);
             } catch (error) {
                 this.showError('Error al enviar el reporte. Por favor, intente nuevamente.');
                 this.submitBtn.disabled = false;
