@@ -238,5 +238,7 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_URL = '/security/logout/'
 LOGOUT_REDIRECT_URL = '/'
 
+STATIC_VIDEO_URL = '/static/videos/'
+
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

@@ -1,5 +1,6 @@
 import math
 import json
+from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseBadRequest
@@ -217,3 +218,30 @@ def add_comment(request, report_pk):
     
 class EducationView(TemplateView):
     template_name = 'education.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # Datos de videos educativos
+        context['education_videos'] = [
+            {
+                'title': '¿Que es el reciclaje?',
+                'thumbnail_url': '/static/img/reciclaje_1.png',
+                'video_url': settings.STATIC_VIDEO_URL + 'reciclaje_1.mp4',
+                'duration': '2:30'
+            },
+            {
+                'title': '¿Cómo reciclar?',
+                'thumbnail_url': '/static/img/reciclaje_2.png',
+                'video_url': settings.STATIC_VIDEO_URL + 'como_reciclar_2.mp4',
+                'duration': '4:22'
+            },
+            {
+                'title': 'IMPORTANCIA DEL RECICLAJE',
+                'thumbnail_url': '/static/img/importancia_1.png',
+                'video_url': settings.STATIC_VIDEO_URL + 'importancia_1.mp4',
+                'duration': '4:22'
+            },
+        ]
+        print(context)
+        return context
