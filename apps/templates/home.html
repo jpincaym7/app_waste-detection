@@ -1,0 +1,122 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative overflow-hidden mb-8">
+    <div class="bg-green-600 text-white p-8 rounded-b-3xl shadow-lg transform transition-all duration-500">
+        <h1 class="text-3xl font-bold mb-3 animate-fade-in">SmartWaste</h1>
+        <p class="text-lg mb-4">Tu compañero inteligente para un mundo más limpio</p>
+        <div class="flex gap-4">
+            <a href="{% url 'waste:capture' %}" class="bg-white text-green-600 px-6 py-2 rounded-full font-semibold hover:bg-green-50 transition-colors duration-300">
+                <i class="fas fa-camera mr-2"></i>Escanear Residuo
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+{% if user.is_authenticated and user_stats %}
+<section class="py-8 px-4">
+    <h2 class="text-2xl font-bold mb-6 text-center">Tu Impacto Ambiental</h2>
+    <div class="grid grid-cols-2 gap-4">
+        <div class="stats-card bg-white p-4 rounded-xl shadow-md">
+            <div class="text-green-600 text-3xl mb-2">
+                <i class="fas fa-leaf"></i>
+            </div>
+            <p class="text-gray-600 text-sm">CO₂ Ahorrado</p>
+            <p class="text-xl font-bold">{{ user_stats.co2_saved|floatformat:1 }} kg</p>
+        </div>
+        <div class="stats-card bg-white p-4 rounded-xl shadow-md">
+            <div class="text-blue-600 text-3xl mb-2">
+                <i class="fas fa-tint"></i>
+            </div>
+            <p class="text-gray-600 text-sm">Agua Ahorrada</p>
+            <p class="text-xl font-bold">{{ user_stats.water_saved|floatformat:1 }} L</p>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Categories Section -->
+<!-- Enhanced Categories Section -->
+<section class="py-8 px-4 swipe-container">
+    <h2 class="text-2xl font-bold mb-6">Categorías de Residuos</h2>
+    <div class="flex overflow-x-auto pb-4 gap-4 snap-x snap-mandatory">
+        {% for category in categories %}
+        <div class="category-card flex-shrink-0 w-64 bg-white rounded-xl shadow-md p-4 snap-center"
+             onclick="showInstructions('{{ category.name }}', '{{ category.description }}', '{{ category.recycling_instructions|escapejs }}')">
+            {% if category.icon %}
+                <img src="{{ category.icon.url }}" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
+            {% else %}
+                <div class="w-16 h-16 mb-4 mx-auto bg-green-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-recycle text-green-600 text-2xl"></i>
+                </div>
+            {% endif %}
+            <h3 class="font-bold text-lg mb-2">{{ category.name }}</h3>
+            <p class="text-gray-600 text-sm mb-3">{{ category.description|truncatewords:20 }}</p>
+            <button class="text-green-600 text-sm font-medium flex items-center">
+                Ver instrucciones
+                <i class="fas fa-chevron-right ml-1 text-xs"></i>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+
+<div class="modal-backdrop" id="modalBackdrop"></div>
+<div class="instruction-modal" id="instructionModal">
+    <div class="modal-drag-handle"></div>
+    <div class="p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold" id="modalTitle"></h3>
+            <button onclick="hideInstructions()" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <div class="space-y-4">
+            <p class="text-gray-600" id="modalDescription"></p>
+            <div class="bg-green-50 rounded-lg p-4">
+                <h4 class="text-lg font-semibold text-green-800 mb-3">
+                    <i class="fas fa-info-circle mr-2"></i>Instrucciones de Reciclaje
+                </h4>
+                <ul class="instruction-steps text-green-800" id="modalInstructions"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Info Sections -->
+<section class="py-8 space-y-8">
+    <!-- Feature 1: Scan -->
+    <div class="fade-in bg-white rounded-xl p-6 mx-4">
+        <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
+                <i class="fas fa-camera text-green-600 text-xl"></i>
+            </div>
+            <h3 class="text-xl font-bold">Escaneo Inteligente</h3>
+        </div>
+        <p class="text-gray-600">Identifica y clasifica tus residuos automáticamente usando nuestra tecnología de reconocimiento.</p>
+    </div>
+
+    <!-- Feature 2: Recycling Points -->
+    <div class="fade-in bg-white rounded-xl p-6 mx-4">
+        <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
+                <i class="fas fa-map-marker-alt text-green-600 text-xl"></i>
+            </div>
+            <h3 class="text-xl font-bold">Puntos de Reciclaje</h3>
+        </div>
+        <p class="text-gray-600">Encuentra {{ recycling_points_count }} puntos de reciclaje cercanos y obtén direcciones para llegar a ellos.</p>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{% static 'js/home.js' %}"></script>
+{% endblock %}

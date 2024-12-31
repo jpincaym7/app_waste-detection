@@ -1,220 +1,3 @@
-{% extends "partials/base.html" %}
-{% load static %}
-
-{% block title %}EcoScan - Analizar Residuo{% endblock %}
-
-{% block extra_head %}
-<style>
-    .waste-type {
-        transition: all 0.3s ease;
-    }
-    
-    
-    .camera-container {
-        position: relative;
-        width: 100%;
-        max-width: 640px;
-        margin: 0 auto;
-    }
-    
-    .camera-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-    }
-    
-    .detection-box {
-        position: absolute;
-        border: 2px solid #fff;
-        border-radius: 4px;
-        box-shadow: 0 0 0 1px rgba(0,0,0,0.3);
-    }
-
-    .upload-area {
-        border: 2px dashed #ccc;
-        border-radius: 8px;
-        padding: 2rem;
-        text-align: center;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .upload-area:hover {
-        border-color: #2196F3;
-        background-color: rgba(33, 150, 243, 0.05);
-    }
-
-    .capture-tips {
-        background-color: #f8f9fa;
-        border-left: 4px solid #2196F3;
-    }
-
-    .tips-icon {
-        color: #2196F3;
-    }
-
-    .waste-result-card {
-        border-radius: 1rem;
-        overflow: hidden;
-        margin-bottom: 1.5rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s;
-    }
-    
-    .waste-result-card:hover {
-        transform: translateY(-2px);
-    }
-    
-    .waste-header {
-        padding: 1.5rem;
-        color: white;
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-    }
-    
-    .waste-icon-container {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.2);
-        padding: 1rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        backdrop-filter: blur(5px);
-    }
-    
-    .waste-icon {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-    }
-    
-    .waste-info {
-        background: white;
-        padding: 1.5rem;
-    }
-    
-    .waste-stat {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        margin-bottom: 0.75rem;
-        padding: 0.75rem;
-        border-radius: 0.5rem;
-        background: #f8f9fa;
-    }
-    
-    .waste-stat i {
-        font-size: 1.25rem;
-    }
-    
-    /* Color themes for different waste types */
-    .waste-type-metal { background: linear-gradient(135deg, #FFC107, #FFA000); }
-    .waste-type-latas { background: linear-gradient(135deg, #FFC107, #FFA000); }
-    .waste-type-papel { background: linear-gradient(135deg, #2196F3, #1976D2); }
-    .waste-type-plastico { background: linear-gradient(135deg, #2196F3, #1976D2); }
-    .waste-type-botella { background: linear-gradient(135deg, #2196F3, #1976D2); }
-    .waste-type-vidrio { background: linear-gradient(135deg, #4CAF50, #388E3C); }
-    .waste-type-carton {background: linear-gradient(135deg, #9E9E9E, #757575);}
-
-</style>
-{% endblock %}
-
-{% block content %}
-<div class="flex flex-col space-y-4">
-    <!-- Tabs de Navegación -->
-    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-        <div class="flex">
-            <button id="cameraTab" class="flex-1 px-4 py-3 text-center border-b-2 border-green-500 font-medium">
-                <i class="fas fa-camera mr-2"></i>Cámara
-            </button>
-            <button id="uploadTab" class="flex-1 px-4 py-3 text-center border-b-2 border-transparent text-gray-500">
-                <i class="fas fa-upload mr-2"></i>Subir Imagen
-            </button>
-        </div>
-    </div>
-
-    <!-- Sección de Cámara -->
-    <div id="cameraSection" class="flex flex-col space-y-4">
-        <!-- Tips de Captura -->
-        <div class="capture-tips p-4 rounded-lg">
-            <h3 class="flex items-center text-lg font-semibold mb-3">
-                <i class="fas fa-lightbulb tips-icon mr-2"></i>
-                Consejos para una mejor captura
-            </h3>
-            <div class="grid md:grid-cols-2 gap-4">
-                <div class="flex items-start">
-                    <i class="fas fa-sun text-yellow-500 mt-1 mr-3"></i>
-                    <p class="text-gray-600">Busca un lugar bien iluminado, preferiblemente con luz natural</p>
-                </div>
-                <div class="flex items-start">
-                    <i class="fas fa-object-ungroup text-blue-500 mt-1 mr-3"></i>
-                    <p class="text-gray-600">Mantén un fondo limpio y despejado, sin otros objetos alrededor</p>
-                </div>
-                <div class="flex items-start">
-                    <i class="fas fa-arrows-alt text-green-500 mt-1 mr-3"></i>
-                    <p class="text-gray-600">Centra el objeto en la imagen y mantén una distancia adecuada</p>
-                </div>
-                <div class="flex items-start">
-                    <i class="fas fa-hand-paper text-purple-500 mt-1 mr-3"></i>
-                    <p class="text-gray-600">Mantén la cámara estable al momento de capturar</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white p-4 rounded-lg shadow-md">
-            <h2 class="text-lg font-semibold mb-2">Captura de Residuos</h2>
-            <p class="text-gray-600">Apunta la cámara hacia el residuo para identificarlo.</p>
-        </div>
-
-        <div class="camera-container bg-black rounded-lg overflow-hidden shadow-lg">
-            <video id="camera" class="w-full" autoplay playsinline></video>
-            <canvas id="overlay" class="camera-overlay"></canvas>
-            
-            <div class="absolute bottom-4 left-0 right-0 flex justify-center space-x-4">
-                <button id="captureBtn" class="bg-green-600 text-white rounded-full p-4 shadow-lg hover:bg-green-700 transition-colors">
-                    <i class="fas fa-camera text-2xl"></i>
-                </button>
-                <button id="switchCameraBtn" class="bg-gray-600 text-white rounded-full p-4 shadow-lg hover:bg-gray-700 transition-colors">
-                    <i class="fas fa-sync-alt text-2xl"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sección de Subida de Imagen -->
-    <div id="uploadSection" class="hidden">
-        <div class="upload-area" id="dropZone">
-            <input type="file" id="fileInput" class="hidden" accept="image/*">
-            <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
-            <p class="text-lg mb-2">Arrastra y suelta una imagen aquí</p>
-            <p class="text-sm text-gray-500">o</p>
-            <button class="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
-                Seleccionar Archivo
-            </button>
-        </div>
-    </div>
-
-    <!-- Resultados del Análisis -->
-    <div id="results" class="bg-white rounded-lg shadow-md overflow-hidden hidden">
-        <div class="p-4 border-b">
-            <h3 class="text-lg font-semibold">Resultados del Análisis</h3>
-        </div>
-        
-        <div id="detectionResults" class="p-4 space-y-6">
-        </div>
-    </div>
-</div>
-{% endblock %}
-
-{% block extra_scripts %}
-<script>
-    // Constants and configurations
 const ROBOFLOW_API_KEY = "0r4klCQmalPo9Xw2xkj6";
 const ROBOFLOW_MODEL_ENDPOINT = "https://detect.roboflow.com/recyclableitems/2";
 
@@ -229,7 +12,7 @@ const wasteInfo = {
     'Valuable Waste - Cans': {
         label: 'Latas',
         binColor: '#9E9E9E',
-        icon: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/setUp_metal.png',
+        icon: '/static/img/setUp_metal.png',
         disposalInstructions: 'Depositar en contenedor de metal/latas',
         recyclable: 'Sí - 100% reciclable',
         decompositionTime: '80-100 años',
@@ -237,7 +20,7 @@ const wasteInfo = {
     'Valuable Waste - Cardboard': {
         label: 'Carton',
         binColor: '#2196F3',
-        icon: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/setUp_carton.png',
+        icon: '/static/img/setUp_carton.png',
         disposalInstructions: 'Depositar en contenedor de papel/cartón',
         recyclable: 'Sí - 100% reciclable',
         decompositionTime: '1 año',
@@ -245,7 +28,7 @@ const wasteInfo = {
     'Valuable Waste - Glass': {
         label: 'Vidrio',
         binColor: '#4CAF50',
-        icon: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/setUp_vidrio.png',
+        icon: '/static/img/setUp_vidrio.png',
         disposalInstructions: 'Depositar en contenedor de vidrio',
         recyclable: 'Sí - 100% reciclable',
         decompositionTime: '4000 años',
@@ -253,7 +36,7 @@ const wasteInfo = {
     'Valuable Waste - Metal': {
         label: 'Metal',
         binColor: '#9E9E9E',
-        icon: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/setUp_metal.png',
+        icon: '/static/img/setUp_metal.png',
         disposalInstructions: 'Depositar en contenedor de metal',
         recyclable: 'Sí - 100% reciclable',
         decompositionTime: '500 años',
@@ -261,7 +44,7 @@ const wasteInfo = {
     'Valuable Waste - Paper': {
         label: 'Papel',
         binColor: '#2196F3',
-        icon: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/setUp_plastico.png',
+        icon: '/static/img/setUp_plastico.png',
         disposalInstructions: 'Depositar en contenedor de papel',
         recyclable: 'Sí - 100% reciclable',
         decompositionTime: '1 año',
@@ -269,7 +52,7 @@ const wasteInfo = {
     'Valuable Waste - Plastic': {
         label: 'Plastico',
         binColor: '#FFC107',
-        icon: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/setUp_plastico.png',
+        icon: '/static/img/setUp_plastico.png',
         disposalInstructions: 'Depositar en contenedor de plástico',
         recyclable: 'Sí - Reciclable según el tipo',
         decompositionTime: '500 años',
@@ -277,7 +60,7 @@ const wasteInfo = {
     'Valuable Waste - Plastic bottles': {
         label: 'Botella',
         binColor: '#FFC107',
-        icon: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/setUp_plastico.png',
+        icon: '/static/img/setUp_plastico.png',
         disposalInstructions: 'Depositar en contenedor de plástico',
         recyclable: 'Sí - 100% reciclable',
         decompositionTime: '450 años',
@@ -590,5 +373,3 @@ document.addEventListener('DOMContentLoaded', () => {
     
     initCamera();
 });
-</script>
-{% endblock %}
