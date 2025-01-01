@@ -1,0 +1,99 @@
+{% extends "partials/base.html" %}
+{% load static %}
+
+{% block title %}EcoScan - Analizar Residuo{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/camera.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="flex flex-col space-y-4">
+    <!-- Tabs de Navegación -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="flex">
+            <button id="cameraTab" class="flex-1 px-4 py-3 text-center border-b-2 border-green-500 font-medium">
+                <i class="fas fa-camera mr-2"></i>Cámara
+            </button>
+            <button id="uploadTab" class="flex-1 px-4 py-3 text-center border-b-2 border-transparent text-gray-500">
+                <i class="fas fa-upload mr-2"></i>Subir Imagen
+            </button>
+        </div>
+    </div>
+
+    <!-- Sección de Cámara -->
+    <div id="cameraSection" class="flex flex-col space-y-4">
+        <!-- Tips de Captura -->
+        <div class="capture-tips p-4 rounded-lg">
+            <h3 class="flex items-center text-lg font-semibold mb-3">
+                <i class="fas fa-lightbulb tips-icon mr-2"></i>
+                Consejos para una mejor captura
+            </h3>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="flex items-start">
+                    <i class="fas fa-sun text-yellow-500 mt-1 mr-3"></i>
+                    <p class="text-gray-600">Busca un lugar bien iluminado, preferiblemente con luz natural</p>
+                </div>
+                <div class="flex items-start">
+                    <i class="fas fa-object-ungroup text-blue-500 mt-1 mr-3"></i>
+                    <p class="text-gray-600">Mantén un fondo limpio y despejado, sin otros objetos alrededor</p>
+                </div>
+                <div class="flex items-start">
+                    <i class="fas fa-arrows-alt text-green-500 mt-1 mr-3"></i>
+                    <p class="text-gray-600">Centra el objeto en la imagen y mantén una distancia adecuada</p>
+                </div>
+                <div class="flex items-start">
+                    <i class="fas fa-hand-paper text-purple-500 mt-1 mr-3"></i>
+                    <p class="text-gray-600">Mantén la cámara estable al momento de capturar</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-lg shadow-md">
+            <h2 class="text-lg font-semibold mb-2">Captura de Residuos</h2>
+            <p class="text-gray-600">Apunta la cámara hacia el residuo para identificarlo.</p>
+        </div>
+
+        <div class="camera-container bg-black rounded-lg overflow-hidden shadow-lg">
+            <video id="camera" class="w-full" autoplay playsinline></video>
+            <canvas id="overlay" class="camera-overlay"></canvas>
+            
+            <div class="absolute bottom-4 left-0 right-0 flex justify-center space-x-4">
+                <button id="captureBtn" class="bg-green-600 text-white rounded-full p-4 shadow-lg hover:bg-green-700 transition-colors">
+                    <i class="fas fa-camera text-2xl"></i>
+                </button>
+                <button id="switchCameraBtn" class="bg-gray-600 text-white rounded-full p-4 shadow-lg hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-sync-alt text-2xl"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de Subida de Imagen -->
+    <div id="uploadSection" class="hidden">
+        <div class="upload-area" id="dropZone">
+            <input type="file" id="fileInput" class="hidden" accept="image/*">
+            <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+            <p class="text-lg mb-2">Arrastra y suelta una imagen aquí</p>
+            <p class="text-sm text-gray-500">o</p>
+            <button class="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                Seleccionar Archivo
+            </button>
+        </div>
+    </div>
+
+    <!-- Resultados del Análisis -->
+    <div id="results" class="bg-white rounded-lg shadow-md overflow-hidden hidden">
+        <div class="p-4 border-b">
+            <h3 class="text-lg font-semibold">Resultados del Análisis</h3>
+        </div>
+        
+        <div id="detectionResults" class="p-4 space-y-6">
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{% static 'js/camera.js' %}"></script>
+{% endblock %}

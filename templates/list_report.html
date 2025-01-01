@@ -1,0 +1,127 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/list_report.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="app-container">
+    <!-- Floating Header -->
+    <header class="floating-header px-4 py-3">
+        <div class="flex items-center justify-between">
+            <h1 class="text-xl font-bold">Reportes de Basura</h1>
+            <div class="flex gap-2">
+                <button id="filterBtn" class="p-2 rounded-full bg-green-50 text-green-600">
+                    <i class="fas fa-filter"></i>
+                </button>
+                <button id="searchBtn" class="p-2 rounded-full bg-green-50 text-green-600">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- View Container -->
+    <div class="view-container">
+        <!-- List View -->
+        <div class="list-view">
+            <div class="space-y-4 px-4 pt-4">
+                {% for report in page_obj %}
+                <article class="report-card shadow-sm touch-feedback">
+                    <div class="relative">
+                        {% if report.image %}
+                        <img data-src="{{ report.image.url }}" 
+                             class="lazy-image w-full h-48 object-cover"
+                             alt="Reporte">
+                        {% else %}
+                        <div class="w-full h-48 bg-gray-100 flex items-center justify-center">
+                            <i class="fas fa-image text-gray-400 text-3xl"></i>
+                        </div>
+                        {% endif %}
+                        <div class="absolute top-3 right-3 flex gap-2">
+                            <span class="severity-badge severity-badge-{{ report.severity }}">
+                                {{ report.get_severity_display }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                            <i class="fas fa-clock"></i>
+                            {{ report.created_at|date:"d/m/Y H:i" }}
+                        </div>
+                        <p class="text-gray-800 line-clamp-2">{{ report.description }}</p>
+                        <div class="mt-3 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                {% if report.user.avatar %}
+                                <img data-src="{{ report.user.avatar.url }}" 
+                                     class="lazy-image w-8 h-8 rounded-full"
+                                     alt="Usuario">
+                                {% else %}
+                                <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                                    <i class="fas fa-user text-gray-400"></i>
+                                </div>
+                                {% endif %}
+                                <span class="text-sm text-gray-600">
+                                    {{ report.user.get_full_name|default:report.user.email }}
+                                </span>
+                            </div>
+                            <button onclick="viewReportDetails({{ report.id }})"
+                                    class="p-2 rounded-full bg-green-50 text-green-600">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </article>
+                {% empty %}
+                <div class="flex flex-col items-center justify-center py-12">
+                    <i class="fas fa-folder-open text-4xl text-gray-400 mb-3"></i>
+                    <p class="text-gray-500">No hay reportes disponibles</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Map View -->
+        <div class="map-view" id="map-container"></div>
+    </div>
+
+    <!-- View Toggle Button -->
+    <button id="viewToggle" 
+            class="view-toggle p-3 bg-white rounded-full shadow-lg text-green-600">
+        <i class="fas fa-map-marked-alt"></i>
+    </button>
+
+    <a href="{% url 'gamification:report-form' %}" 
+        class="create-report-btn touch-feedback ">
+            <i class="fas fa-plus text-xl"></i>
+    </a>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+
+<!-- Añade esto justo antes del bloque extra_scripts -->
+<script id="reports-data" type="application/json">
+    [
+        {% for report in page_obj %}
+            {
+                "id": {{ report.id }},
+                "latitude": {{ report.latitude|stringformat:"f" }},
+                "longitude": {{ report.longitude|stringformat:"f" }},
+                "severity": {{ report.severity }},
+                "status": "{{ report.status }}",
+                "description": "{{ report.description|escapejs }}",
+                "image_url": "{{ report.image.url }}",
+                "created_at": "{{ report.created_at|date:"d/m/Y H:i" }}",
+                "user_name": "{{ report.user.get_full_name|default:report.user.email|escapejs }}"
+            }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ]
+</script>
+<script>
+    const maptilerKey = "{{ maptiler_key }}";
+</script>
+<script src="{% static 'js/api_reports.js' %}"></script>
+{% endblock %}
