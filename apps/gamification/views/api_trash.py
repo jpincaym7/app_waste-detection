@@ -229,19 +229,19 @@ class EducationView(TemplateView):
         context['education_videos'] = [
             {
                 'title': '¿Que es el reciclaje?',
-                'thumbnail_url': f'{S3_BASE_URL}/img/reciclaje_1.png',
+                'thumbnail_url': f'{S3_BASE_URL}/img/reciclaje_1.PNG',
                 'video_url': f'{S3_BASE_URL}/videos/reciclaje_1.mp4',
                 'duration': '2:30'
             },
             {
                 'title': '¿Cómo reciclar?',
-                'thumbnail_url': f'{S3_BASE_URL}/img/reciclaje_2.png',
+                'thumbnail_url': f'{S3_BASE_URL}/img/reciclaje_2.PNG',
                 'video_url': f'{S3_BASE_URL}/videos/como_reciclar_2.mp4',
                 'duration': '4:22'
             },
             {
                 'title': 'IMPORTANCIA DEL RECICLAJE',
-                'thumbnail_url': f'{S3_BASE_URL}/img/importancia_1.png',
+                'thumbnail_url': f'{S3_BASE_URL}/img/importancia_1.PNG',
                 'video_url': f'{S3_BASE_URL}/videos/importancia_1.mp4',
                 'duration': '4:22'
             },
