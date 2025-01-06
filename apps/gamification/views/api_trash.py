@@ -228,9 +228,9 @@ class EducationView(TemplateView):
         # Datos de videos educativos con URLs completas de S3
         context['education_videos'] = [
             {
-                'title': '¿Que es el reciclaje?',
+                'title': '15 Manualidades faciles de realizar',
                 'thumbnail_url': f'{S3_BASE_URL}/img/reciclaje_1.PNG',
-                'video_url': f'{S3_BASE_URL}/videos/reciclaje_1.mp4',
+                'video_url': f'{S3_BASE_URL}/videos/16_manualidades_faciles.mp4 ',
                 'duration': '2:30'
             },
             {
@@ -240,9 +240,9 @@ class EducationView(TemplateView):
                 'duration': '4:22'
             },
             {
-                'title': 'IMPORTANCIA DEL RECICLAJE',
+                'title': '3 Manulidades para transformar caja de zapatos',
                 'thumbnail_url': f'{S3_BASE_URL}/img/importancia_1.PNG',
-                'video_url': f'{S3_BASE_URL}/videos/importancia_1.mp4',
+                'video_url': f'{S3_BASE_URL}/videos/manualidades.mp4',
                 'duration': '4:22'
             },
         ]
