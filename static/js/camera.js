@@ -153,7 +153,6 @@ function createResultElement(info, detection) {
     const resultElement = document.createElement('div');
     resultElement.className = 'waste-result-card';
     
-    // Determine waste type class for styling
     const wasteTypeClass = `waste-type-${info.label.toLowerCase()}`;
     
     resultElement.innerHTML = `
@@ -192,6 +191,13 @@ function createResultElement(info, detection) {
                     <p class="text-gray-600">${info.decompositionTime}</p>
                 </div>
             </div>
+            <button 
+                class="mt-4 w-full py-3 px-4 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center space-x-2"
+                onclick="openCraftsModal('${info.label}')"
+            >
+                <i class="fas fa-paint-brush"></i>
+                <span>Ver Manualidades</span>
+            </button>
         </div>
     `;
     
