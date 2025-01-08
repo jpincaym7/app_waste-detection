@@ -19,6 +19,7 @@ from django.urls import include, path
 from waste_detection import settings
 from django.conf.urls.static import static
 from apps.waste.views.home import HomeView
+from django.views.generic.base import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,7 +27,8 @@ urlpatterns = [
     path('security/', include('apps.security.urls', namespace='security')),
     path('recycling_points/', include('apps.recycling_points.urls', namespace='recycling_points')),
     path('gamification/', include('apps.gamification.urls', namespace='gamification')),
-    path("", HomeView.as_view(), name="home")
+    path("", HomeView.as_view(), name="home"),
+    path('favicon.ico', RedirectView.as_view(url='/static/img/favicon.ico')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
