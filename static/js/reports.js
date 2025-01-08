@@ -4,13 +4,13 @@ class TrashReportForm {
         this.map = null;
         this.marker = null;
         this.imagePreview = null;
+        this.form = document.getElementById('reportForm');
+        this.editMode = this.form?.dataset.reportId ? true : false;
+        this.reportId = this.form?.dataset.reportId;
         
         this.initializeElements();
-        this.getUserLocation().then(() => {
-            this.initializeMap();
-            this.setupEventListeners();
-        });
-        this.loadReports();
+        this.initializeMapAndData();
+        this.setupEventListeners();
     }
     initializeElements() {
         this.form = document.getElementById('reportForm');
@@ -54,38 +54,52 @@ class TrashReportForm {
         });
     }
 
-    initializeMap() {
-        maplibregl.setRTLTextPlugin(
-            'https://unpkg.com/@maplibre/maplibre-gl-rtl-text@0.2.0/maplibre-gl-rtl-text.min.js'
-        );
-
-        this.map = new maplibregl.Map({
-            container: 'map',
-            style: `https://api.maptiler.com/maps/basic/style.json?key=${MAPTILER_KEY}`,
-            center: this.defaultCoordinates, // Use user's location or default
-            zoom: 15 // Closer zoom for better location context
-        });
-
-        // Add controls
-        this.map.addControl(new maplibregl.NavigationControl());
+    async initializeMapAndData() {
+        await this.getUserLocation();
+        await this.initializeMap();
         
-        // Configure and add GeolocateControl
-        const geolocateControl = new maplibregl.GeolocateControl({
-            positionOptions: {
-                enableHighAccuracy: true
-            },
-            trackUserLocation: true,
-            showAccuracyCircle: true
-        });
-        
-        this.map.addControl(geolocateControl);
+        if (this.editMode) {
+            await this.loadExistingData();
+        }
+        this.loadReports();
+    }
 
-        // Automatically trigger geolocation when map loads
-        this.map.on('load', () => {
-            geolocateControl.trigger();
-        });
+    async initializeMap() {
+        return new Promise((resolve) => {
+            maplibregl.setRTLTextPlugin(
+                'https://unpkg.com/@maplibre/maplibre-gl-rtl-text@0.2.0/maplibre-gl-rtl-text.min.js'
+            );
 
-        this.map.on('click', (e) => this.handleMapClick(e));
+            this.map = new maplibregl.Map({
+                container: 'map',
+                style: `https://api.maptiler.com/maps/basic/style.json?key=${MAPTILER_KEY}`,
+                center: this.defaultCoordinates,
+                zoom: 15
+            });
+
+            // Add controls
+            this.map.addControl(new maplibregl.NavigationControl());
+            
+            const geolocateControl = new maplibregl.GeolocateControl({
+                positionOptions: {
+                    enableHighAccuracy: true
+                },
+                trackUserLocation: true,
+                showAccuracyCircle: true
+            });
+            
+            this.map.addControl(geolocateControl);
+
+            this.map.on('load', () => {
+                // Solo activamos el geolocate si no estamos en modo edición
+                if (!this.editMode) {
+                    geolocateControl.trigger();
+                }
+                resolve();
+            });
+
+            this.map.on('click', (e) => this.handleMapClick(e));
+        });
     }
 
     setupEventListeners() {
@@ -206,7 +220,11 @@ class TrashReportForm {
                     }
                     break;
                 case 3:
-                    if (!this.imageInput.files.length) {
+                    // Verificar si hay una imagen nueva en el input O si hay una imagen existente previsualizándose
+                    const hasNewImage = this.imageInput.files.length > 0;
+                    const hasExistingImage = !this.imagePreviewElement.classList.contains('hidden');
+                    
+                    if (!hasNewImage && !hasExistingImage) {
                         this.showError('Por favor, suba una imagen del reporte');
                         return false;
                     }
@@ -304,6 +322,79 @@ class TrashReportForm {
             }
         }
 
+        async loadExistingData() {
+            try {
+                const response = await fetch(`/gamification/reports/${this.reportId}/`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                
+                // Guardar referencias a los elementos del formulario
+                const descriptionField = this.form.querySelector('[name="description"]');
+                const severityField = this.form.querySelector('[name="severity"]');
+                const recurringField = this.form.querySelector('[name="is_recurring"]'); // Corregido el nombre del campo
+                
+                // Verificar que los campos existen antes de establecer valores
+                if (descriptionField) {
+                    descriptionField.value = data.description || '';
+                }
+                
+                if (severityField) {
+                    severityField.value = data.severity || '';
+                }
+                
+                if (recurringField) {
+                    recurringField.checked = Boolean(data.is_recurring);
+                }
+                
+                // Establecer coordenadas y marcador si existen
+                const lat = parseFloat(data.latitude);
+                const lng = parseFloat(data.longitude);
+                
+                if (!isNaN(lat) && !isNaN(lng)) {
+                    // Actualizar el mapa y crear el marcador
+                    this.map.setCenter([lng, lat]);
+                    if (this.marker) this.marker.remove();
+                    
+                    this.marker = new maplibregl.Marker({
+                        color: '#10B981',
+                        draggable: true
+                    })
+                    .setLngLat([lng, lat])
+                    .addTo(this.map);
+                    
+                    // Actualizar los campos ocultos
+                    const latitudeField = document.getElementById('latitude');
+                    const longitudeField = document.getElementById('longitude');
+                    
+                    if (latitudeField) latitudeField.value = lat;
+                    if (longitudeField) longitudeField.value = lng;
+                    
+                    // Actualizar la información de ubicación
+                    this.updateCoordinates({ lat, lng });
+                }
+                
+                // Mostrar imagen existente si existe
+                if (data.image_url && this.imagePreviewElement) {
+                    const previewImg = this.imagePreviewElement.querySelector('img');
+                    if (previewImg) {
+                        previewImg.src = data.image_url;
+                        this.imagePreviewElement.classList.remove('hidden');
+                    }
+                    
+                    const placeholder = this.uploadZone?.querySelector('.upload-placeholder');
+                    if (placeholder) {
+                        placeholder.classList.add('hidden');
+                    }
+                }
+                
+            } catch (error) {
+                console.error('Error al cargar datos existentes:', error);
+                this.showError('Error al cargar los datos del reporte. Por favor, recarga la página o intenta más tarde.');
+            }
+        }
+
         async handleSubmit(e) {
             e.preventDefault();
             if (this.isSubmitting) return;
@@ -314,7 +405,11 @@ class TrashReportForm {
     
             try {
                 const formData = new FormData(this.form);
-                const response = await fetch('/gamification/reports/create/', {
+                const url = this.editMode 
+                    ? `/gamification/reports/update/${this.reportId}/`
+                    : '/gamification/reports/create/';
+                
+                const response = await fetch(url, {
                     method: 'POST',
                     body: formData,
                     headers: {
@@ -322,15 +417,15 @@ class TrashReportForm {
                     }
                 });
     
-                if (!response.ok) throw new Error('Error al enviar el reporte');
+                if (!response.ok) throw new Error('Error al procesar el reporte');
     
                 const data = await response.json();
-                this.showSuccess('¡Reporte enviado con éxito!');
+                this.showSuccess(this.editMode ? '¡Reporte actualizado con éxito!' : '¡Reporte enviado con éxito!');
                 setTimeout(() => window.location.href = `/gamification/reports/view/`, 1500);
             } catch (error) {
-                this.showError('Error al enviar el reporte. Por favor, intente nuevamente.');
+                this.showError(`Error al ${this.editMode ? 'actualizar' : 'enviar'} el reporte. Por favor, intente nuevamente.`);
                 this.submitBtn.disabled = false;
-                this.submitBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Enviar Reporte';
+                this.submitBtn.innerHTML = `<i class="fas fa-check mr-2"></i>${this.editMode ? 'Actualizar' : 'Enviar'} Reporte`;
             } finally {
                 this.isSubmitting = false;
             }
@@ -362,13 +457,14 @@ class TrashReportForm {
     }
     
     
+    
 
-    // Initialize the form when the DOM is ready
-    document.addEventListener('DOMContentLoaded', () => {
-        const trashReportForm = new TrashReportForm();
-        
-        // Enable gestures for mobile
-        if ('ontouchstart' in window) {
-            document.body.classList.add('touch-device');
-        }
-    });
+// Initialize the form when the DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    const trashReportForm = new TrashReportForm();
+    
+    // Enable gestures for mobile
+    if ('ontouchstart' in window) {
+        document.body.classList.add('touch-device');
+    }
+});
