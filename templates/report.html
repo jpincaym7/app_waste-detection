@@ -5,7 +5,14 @@
 <link href="https://cdn.maptiler.com/maplibre-gl-js/v2.4.0/maplibre-gl.css" rel="stylesheet" />
 <link rel="stylesheet" href="{% static 'css/reports.css' %}">
 {% endblock %}
-{% block title %}Crear Reporte de Basura{% endblock %}
+{% block title %}
+    {% if edit_mode %}
+        Actualizar Reporte de Basura
+    {% else %}
+        Crear Reporte de Basura
+    {% endif %}
+{% endblock %}
+
 
 {% block content %}
 <div class="max-w-4xl mx-auto">
@@ -33,7 +40,7 @@
     </div>
 
     <!-- Form Container -->
-    <form id="reportForm" class="bg-white rounded-lg shadow-lg">
+    <form id="reportForm" class="bg-white rounded-lg shadow-lg" {% if edit_mode %}data-report-id="{{ report.id }}"{% endif %}>
         <!-- Step 1: Location -->
         <div class="step-content active" data-step="1">
             <div class="p-6">
@@ -70,7 +77,7 @@
                     </div>
                     <div>
                         <label class="flex items-center space-x-2">
-                            <input type="checkbox" name="is_recurÑring" class="form-checkbox">
+                            <input type="checkbox" name="is_recurring" class="form-checkbox">
                             <span class="text-sm text-gray-700">Es un problema recurrente</span>
                         </label>
                     </div>
