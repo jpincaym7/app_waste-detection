@@ -14,7 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    
+    <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
     <!-- PWA META TAGS -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -102,42 +102,51 @@
 
     <!-- Toast Container -->
     {% if messages %}
-    <div id="toast-container" class="fixed top-20 right-4 z-50 pointer-events-none p-4 flex flex-col items-end space-y-2">
-        {% for message in messages %}
-        <div class="toast-message animate-toast-in pointer-events-auto max-w-sm w-full bg-white rounded-xl shadow-lg overflow-hidden">
-            <div class="relative">
-                <div class="progress-bar absolute bottom-0 left-0 h-1 bg-{{ message.tags }}-500 w-full"></div>
-                <div class="flex items-start p-4">
-                    <div class="flex-shrink-0">
-                        {% if message.tags == 'success' %}
-                            <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
-                                <i class="fas fa-check text-emerald-500"></i>
+        <div id="toast-container" class="fixed inset-x-0 top-20 z-50 pointer-events-none px-4 flex flex-col items-center space-y-2 sm:items-end">
+            {% for message in messages %}
+            <div class="toast-message animate-toast-in pointer-events-auto w-full max-w-sm bg-white rounded-xl shadow-xl">
+                <div class="relative overflow-hidden">
+                    <div class="p-4">
+                        <div class="flex items-start space-x-4">
+                            <!-- Icon Section -->
+                            <div class="flex-shrink-0">
+                                {% if message.tags == 'success' %}
+                                    <div class="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center">
+                                        <i class="fas fa-check text-xl text-emerald-500"></i>
+                                    </div>
+                                {% elif message.tags == 'error' %}
+                                    <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+                                        <i class="fas fa-times text-xl text-red-500"></i>
+                                    </div>
+                                {% elif message.tags == 'warning' %}
+                                    <div class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center">
+                                        <i class="fas fa-exclamation text-xl text-amber-500"></i>
+                                    </div>
+                                {% else %}
+                                    <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+                                        <i class="fas fa-info text-xl text-blue-500"></i>
+                                    </div>
+                                {% endif %}
                             </div>
-                        {% elif message.tags == 'error' %}
-                            <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
-                                <i class="fas fa-times text-red-500"></i>
+                            
+                            <!-- Content Section -->
+                            <div class="flex-1 pt-1">
+                                <p class="text-base font-medium text-gray-900">{{ message }}</p>
                             </div>
-                        {% elif message.tags == 'warning' %}
-                            <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
-                                <i class="fas fa-exclamation text-amber-500"></i>
-                            </div>
-                        {% else %}
-                            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                                <i class="fas fa-info text-blue-500"></i>
-                            </div>
-                        {% endif %}
+                            
+                            <!-- Close Button -->
+                            <button type="button" class="close-toast flex-shrink-0 pt-1">
+                                <i class="fas fa-times text-gray-400 hover:text-gray-600 text-lg"></i>
+                            </button>
+                        </div>
                     </div>
-                    <div class="ml-4 w-0 flex-1">
-                        <p class="text-sm font-medium text-gray-900">{{ message }}</p>
-                    </div>
-                    <button type="button" class="close-toast ml-4 text-gray-400 hover:text-gray-600 transition-colors">
-                        <i class="fas fa-times"></i>
-                    </button>
+                    
+                    <!-- Progress Bar -->
+                    <div class="progress-bar absolute bottom-0 left-0 h-1 bg-{{ message.tags }}-500"></div>
                 </div>
             </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-    </div>
     {% endif %}
 
     <!-- Main Content -->
