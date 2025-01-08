@@ -3,7 +3,7 @@ import json
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse, HttpResponseBadRequest
+from django.http import HttpResponseForbidden, JsonResponse, HttpResponseBadRequest
 from django.core.paginator import Paginator
 from django.views.generic import TemplateView
 from django.views.decorators.http import require_http_methods
@@ -144,6 +144,71 @@ def trash_report_create(request):
         })
     except Exception as e:
         return HttpResponseBadRequest(str(e))
+    
+
+@login_required
+@require_http_methods(["POST"])
+def trash_report_update(request, pk):
+    """Vista para actualizar un reporte existente."""
+    try:
+        report = get_object_or_404(TrashReport, pk=pk)
+        
+        # Verificar si el usuario tiene permiso para editar
+        if report.user != request.user:
+            return HttpResponseForbidden('No tienes permiso para editar este reporte')
+            
+        # Actualizar campos
+        report.latitude = request.POST.get('latitude', report.latitude)
+        report.longitude = request.POST.get('longitude', report.longitude)
+        report.description = request.POST.get('description', report.description)
+        report.severity = request.POST.get('severity', report.severity)
+        report.is_recurring = request.POST.get('is_recurring') == 'true'
+        
+        # Manejar la imagen solo si se proporciona una nueva
+        if 'image' in request.FILES:
+            report.image = request.FILES['image']
+            
+        report.save()
+        
+        return JsonResponse({
+            'id': report.id,
+            'message': 'Reporte actualizado exitosamente'
+        })
+    except Exception as e:
+        return HttpResponseBadRequest(str(e))
+
+@login_required
+def trash_report_edit(request, pk):
+    """Vista para mostrar el formulario de edición."""
+    report = get_object_or_404(TrashReport, pk=pk)
+    
+    # Verificar si el usuario tiene permiso para editar
+    if report.user != request.user:
+        return HttpResponseForbidden('No tienes permiso para editar este reporte')
+        
+    context = {
+        'report': report,
+        'severity_choices': TrashReport.SEVERITY_CHOICES,
+        'edit_mode': True,
+        'maptiler_key': "eOJz2rYdmVnQEiFjpgcP"
+    }
+    return render(request, 'report.html', context)
+
+@login_required
+def trash_report_detail_json(request, pk):
+    """Vista para obtener los detalles de un reporte en formato JSON."""
+    report = get_object_or_404(TrashReport, pk=pk)
+    
+    return JsonResponse({
+        'id': report.id,
+        'latitude': str(report.latitude),
+        'longitude': str(report.longitude),
+        'description': report.description,
+        'severity': report.severity,
+        'is_recurring': report.is_recurring,
+        'image_url': report.image.url if report.image else None,
+        'status': report.status
+    })
 
 @login_required
 @require_http_methods(["GET"])
@@ -228,21 +293,21 @@ class EducationView(TemplateView):
         # Datos de videos educativos con URLs completas de S3
         context['education_videos'] = [
             {
-                'title': '15 Manualidades faciles de realizar',
-                'thumbnail_url': f'{S3_BASE_URL}/img/reciclaje_1.PNG',
-                'video_url': f'{S3_BASE_URL}/videos/16_manualidades_faciles.mp4 ',
+                'title': '¿Que es el reciclaje?',
+                'thumbnail_url': f'{S3_BASE_URL}/static/img/reciclaje_1.png',
+                'video_url': f'{S3_BASE_URL}/videos/reciclaje_1.mp4',
                 'duration': '2:30'
             },
             {
                 'title': '¿Cómo reciclar?',
-                'thumbnail_url': f'{S3_BASE_URL}/img/reciclaje_2.PNG',
+                'thumbnail_url': f'{S3_BASE_URL}/static/img/reciclaje_2.png',
                 'video_url': f'{S3_BASE_URL}/videos/como_reciclar_2.mp4',
                 'duration': '4:22'
             },
             {
-                'title': '3 Manulidades para transformar caja de zapatos',
-                'thumbnail_url': f'{S3_BASE_URL}/img/importancia_1.PNG',
-                'video_url': f'{S3_BASE_URL}/videos/manualidades.mp4',
+                'title': 'IMPORTANCIA DEL RECICLAJE',
+                'thumbnail_url': f'{S3_BASE_URL}/static/img/importancia_1.png',
+                'video_url': f'{S3_BASE_URL}/videos/importancia_1.mp4',
                 'duration': '4:22'
             },
         ]
