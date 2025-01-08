@@ -92,8 +92,52 @@
         </div>
     </div>
 </div>
+<div id="craftsModal" class="modal-container hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+        <!-- Header del Modal -->
+        <div class="modal-header">
+            <h2 class="modal-title">Manualidades Creativas</h2>
+            <button class="modal-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Contenido del Modal -->
+        <div class="modal-body">
+            <!-- Lista de Manualidades -->
+            <div id="craftsList" class="crafts-list"></div>
+            
+            <!-- Detalles de Manualidad -->
+            <div id="craftDetails" class="craft-details">
+                <div class="craft-details-content">
+                    <div class="materials-section">
+                        <h4 class="text-lg font-semibold mb-4">Materiales Necesarios</h4>
+                        <ul class="materials-list space-y-2"></ul>
+                    </div>
+                    
+                    <div class="steps-section mt-6">
+                        <h4 class="text-lg font-semibold mb-4">Pasos a Seguir</h4>
+                        <ol class="steps-list space-y-4"></ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer del Modal -->
+        <div class="modal-footer">
+            <button id="backButton" class="button-back hidden">
+                <i class="fas fa-arrow-left mr-2"></i>Volver
+            </button>
+            <button id="closeButton" class="button-close">
+                Cerrar
+            </button>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_scripts %}
     <script src="{% static 'js/camera.js' %}"></script>
+    <script src="{% static 'js/crafts_modal.js' %}"></script>
 {% endblock %}
