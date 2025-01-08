@@ -28,7 +28,7 @@ urlpatterns = [
     path('recycling_points/', include('apps.recycling_points.urls', namespace='recycling_points')),
     path('gamification/', include('apps.gamification.urls', namespace='gamification')),
     path("", HomeView.as_view(), name="home"),
-    path('favicon.ico', RedirectView.as_view(url='/static/img/favicon.ico')),
+    path('favicon.ico', RedirectView.as_view(url='/img/favicon.ico')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
