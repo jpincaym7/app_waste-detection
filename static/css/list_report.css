@@ -246,3 +246,114 @@
         bottom: 7rem;
     }
 }
+
+/* Estilos base del popup */
+.maplibregl-popup {
+    z-index: 999;
+    max-width: 320px !important;
+    min-width: 280px !important;
+}
+
+.maplibregl-popup-content {
+    padding: 0 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+    overflow: hidden;
+}
+
+.maplibregl-popup-close-button {
+    padding: 0 !important;
+    width: 24px !important;
+    height: 24px !important;
+    line-height: 24px !important;
+    text-align: center !important;
+    font-size: 16px !important;
+    color: white !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    border-radius: 50% !important;
+    margin: 8px !important;
+    z-index: 2 !important;
+    transition: background-color 0.2s ease !important;
+}
+
+.maplibregl-popup-close-button:hover {
+    background: rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Contenido del popup */
+.popup-content {
+    background: white;
+}
+
+.popup-image-container {
+    position: relative;
+    width: 100%;
+    height: 160px;
+    background: #f3f4f6;
+}
+
+.popup-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.popup-info {
+    padding: 16px;
+}
+
+.popup-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.popup-badges {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.popup-description {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #374151;
+    margin-bottom: 12px;
+}
+
+.popup-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 12px;
+    border-top: 1px solid #e5e7eb;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.popup-user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.popup-user-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #e5e7eb;
+}
+
+/* Ajustes para el tip del popup */
+.maplibregl-popup-tip {
+    border-top-color: white !important;
+    border-width: 8px !important;
+    margin-top: -1px !important;
+}
+
+.maplibregl-popup-anchor-top .maplibregl-popup-tip {
+    border-bottom-color: white !important;
+    border-top-color: transparent !important;
+}
