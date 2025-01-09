@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Estado global para el popup activo
+    let activePopup = null;
+
     // Configuración inicial del mapa
     const map = new maplibregl.Map({
         container: 'map-container',
@@ -11,136 +14,172 @@ document.addEventListener('DOMContentLoaded', function() {
     // Añadir controles de navegación
     map.addControl(new maplibregl.NavigationControl(), 'top-right');
     
-    // Configuración de colores por severidad
-    const severityConfig = {
-        1: { color: '#EAB308', label: 'Baja' },
-        2: { color: '#F97316', label: 'Media' },
-        3: { color: '#EF4444', label: 'Alta' },
-        4: { color: '#9333EA', label: 'Crítica' }
+    // Configuraciones centralizadas
+    const CONFIG = {
+        severity: {
+            1: { color: '#EAB308', label: 'Baja' },
+            2: { color: '#F97316', label: 'Media' },
+            3: { color: '#EF4444', label: 'Alta' },
+            4: { color: '#9333EA', label: 'Crítica' }
+        },
+        status: {
+            'pending': 'Pendiente',
+            'in_review': 'En Revisión',
+            'verified': 'Verificado',
+            'solved': 'Resuelto',
+            'rejected': 'Rechazado'
+        }
     };
 
-    // Configuración de estados
-    const statusConfig = {
-        'pending': 'Pendiente',
-        'in_review': 'En Revisión',
-        'verified': 'Verificado',
-        'solved': 'Resuelto',
-        'rejected': 'Rechazado'
-    };
+    // Manejador de cierre global para popups
+    map.on('click', closeActivePopup);
 
-    // Función para crear el HTML del popup
+    function closeActivePopup() {
+        if (activePopup) {
+            activePopup.remove();
+            activePopup = null;
+        }
+    }
+
     function createPopupHTML(report) {
         return `
-            <div class="p-3 max-w-sm">
-                ${report.image_url ? `
-                    <img src="${report.image_url}" 
-                         class="w-full h-32 object-cover rounded mb-2"
-                         alt="Imagen del reporte"
-                         onerror="this.onerror=null; this.src='/static/img/placeholder.jpg';">
-                ` : ''}
-                <div class="flex items-center gap-2 mb-2">
-                    <span class="severity-badge-${report.severity} px-2 py-1 rounded-full text-xs">
-                        ${severityConfig[report.severity].label}
-                    </span>
-                    <span class="status-${report.status} px-2 py-1 rounded-full text-xs">
-                        ${statusConfig[report.status]}
-                    </span>
+            <div class="popup-content">
+                <div class="popup-image-container">
+                    ${report.image_url ? `
+                        <img 
+                            src="${report.image_url}" 
+                            class="popup-image"
+                            alt="Imagen del reporte"
+                            onerror="this.onerror=null; this.src='/static/img/placeholder.jpg';"
+                        >
+                    ` : `
+                        <div class="popup-image flex items-center justify-center bg-gray-100">
+                            <i class="fas fa-image text-gray-400 text-3xl"></i>
+                        </div>
+                    `}
                 </div>
-                <p class="text-sm text-gray-600 mb-2">${report.description}</p>
-                <div class="text-xs text-gray-500">
-                    <i class="fas fa-clock mr-1"></i> ${report.created_at}
-                    <br>
-                    <i class="fas fa-user mr-1"></i> ${report.user_name}
+                <div class="popup-info">
+                    <div class="popup-badges">
+                        <span class="severity-badge severity-badge-${report.severity}">
+                            ${CONFIG.severity[report.severity].label}
+                        </span>
+                        <span class="status-${report.status} px-2 py-1 rounded-full text-xs">
+                            ${CONFIG.status[report.status]}
+                        </span>
+                    </div>
+                    <p class="popup-description">${report.description}</p>
+                    <div class="popup-footer">
+                        <div class="popup-user">
+                            <div class="popup-user-avatar flex items-center justify-center">
+                                <i class="fas fa-user text-gray-400 text-xs"></i>
+                            </div>
+                            <span>${report.user_name}</span>
+                        </div>
+                        <div class="popup-date">
+                            <i class="fas fa-clock mr-1"></i>
+                            ${report.created_at}
+                        </div>
+                    </div>
                 </div>
             </div>
         `;
     }
 
-    // Función para agregar marcadores
+    function createMarker(report) {
+        const markerElement = document.createElement('div');
+        markerElement.className = 'custom-marker';
+        markerElement.style.cssText = `
+            width: 30px;
+            height: 30px;
+            background-color: ${CONFIG.severity[report.severity].color};
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        `;
+
+        return new maplibregl.Marker({
+            element: markerElement,
+            anchor: 'center'
+        });
+    }
+
+    function setupPopup(marker, report) {
+        const markerElement = marker.getElement();
+        
+        function showPopup(e) {
+            e.stopPropagation();
+            
+            // Cerrar popup activo si existe
+            closeActivePopup();
+
+            const coords = marker.getLngLat();
+            
+            // Crear nuevo popup
+            activePopup = new maplibregl.Popup({
+                offset: [0, -15],
+                closeButton: true,
+                closeOnClick: false,
+                maxWidth: '300px',
+                className: 'custom-popup',
+                anchor: 'bottom',
+            })
+            .setLngLat(coords)
+            .setHTML(createPopupHTML(report))
+            .addTo(map);
+
+            const popupElement = activePopup.getElement();
+            
+            // Prevenir eventos de propagación en el popup
+            popupElement.addEventListener('click', (e) => e.stopPropagation());
+            
+            // Hacer el contenido del popup no interactivo para eventos del mouse
+            const popupContent = popupElement.querySelector('.popup-content');
+            if (popupContent) {
+                popupContent.style.pointerEvents = 'none';
+                popupContent.style.userSelect = 'none';
+            }
+
+            // Mantener el popup en posición fija
+            const originalLngLat = coords;
+            activePopup.on('move', () => {
+                activePopup.setLngLat(originalLngLat);
+            });
+        }
+
+        markerElement.addEventListener('click', showPopup);
+
+        // Eventos hover solo para desktop
+        if (!('ontouchstart' in window)) {
+            markerElement.addEventListener('mouseenter', () => {
+                markerElement.style.transform = 'scale(1.1)';
+            });
+
+            markerElement.addEventListener('mouseleave', () => {
+                markerElement.style.transform = 'scale(1)';
+            });
+        }
+    }
+
     function addMarkers(reports) {
         reports.forEach(report => {
-            // Validar coordenadas
             if (!isValidCoordinate(report.latitude, report.longitude)) {
                 console.warn(`Coordenadas inválidas para el reporte ${report.id}`);
                 return;
             }
 
-            // Crear el marcador personalizado
-            const markerElement = document.createElement('div');
-            markerElement.className = 'custom-marker';
-            markerElement.style.cssText = `
-                width: 30px;
-                height: 30px;
-                background-color: ${severityConfig[report.severity].color};
-                border-radius: 50%;
-                border: 2px solid white;
-                box-shadow: 0 0 10px rgba(0,0,0,0.3);
-                cursor: pointer;
-                transition: transform 0.2s ease;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            `;
+            const marker = createMarker(report)
+                .setLngLat([report.longitude, report.latitude])
+                .addTo(map);
 
-            // Crear y configurar el popup con opciones ajustadas
-            const popup = new maplibregl.Popup({
-                offset: {
-                    'top': [0, 10],
-                    'top-left': [0, 10],
-                    'top-right': [0, 10],
-                    'bottom': [0, -30],
-                    'bottom-left': [0, -30],
-                    'bottom-right': [0, -30],
-                    'left': [10, 0],
-                    'right': [-10, 0]
-                },
-                closeButton: true,
-                closeOnClick: false,
-                maxWidth: '300px',
-                anchor: 'bottom'
-            }).setHTML(createPopupHTML(report));
-
-            // Crear el marcador
-            const marker = new maplibregl.Marker({
-                element: markerElement,
-                anchor: 'center'
-            })
-            .setLngLat([report.longitude, report.latitude])
-            .addTo(map);
-
-            // Manejar eventos del marcador
-            let isPopupOpen = false;
-
-            markerElement.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (!isPopupOpen) {
-                    marker.setPopup(popup);
-                    popup.addTo(map);
-                    isPopupOpen = true;
-                } else {
-                    popup.remove();
-                    isPopupOpen = false;
-                }
-            });
-
-            popup.on('close', () => {
-                isPopupOpen = false;
-            });
-
-            // Eventos hover en desktop
-            if (!('ontouchstart' in window)) {
-                markerElement.addEventListener('mouseenter', () => {
-                    markerElement.style.transform = 'scale(1.1)';
-                });
-
-                markerElement.addEventListener('mouseleave', () => {
-                    markerElement.style.transform = 'scale(1)';
-                });
-            }
+            setupPopup(marker, report);
         });
     }
 
-    // El resto de las funciones permanecen igual
     function isValidCoordinate(lat, lng) {
         return lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180;
     }
@@ -161,7 +200,22 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Inicializar el mapa con la ubicación del usuario
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371;
+        const dLat = toRad(lat2 - lat1);
+        const dLon = toRad(lon2 - lon1);
+        const a = 
+            Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * 
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
+    }
+
+    function toRad(deg) {
+        return deg * (Math.PI/180);
+    }
+
     function initializeMapWithLocation() {
         if ('geolocation' in navigator) {
             navigator.geolocation.getCurrentPosition(
@@ -171,14 +225,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     map.setZoom(13);
 
                     const reports = JSON.parse(document.getElementById('reports-data').textContent || '[]');
-                    const nearbyReports = reports.filter(report => {
-                        return calculateDistance(
+                    const nearbyReports = reports.filter(report => 
+                        calculateDistance(
                             position.coords.latitude,
                             position.coords.longitude,
                             report.latitude,
                             report.longitude
-                        ) <= 50;
-                    });
+                        ) <= 50
+                    );
 
                     addMarkers(reports);
                     if (nearbyReports.length > 0) {
@@ -202,22 +256,6 @@ document.addEventListener('DOMContentLoaded', function() {
             addMarkers(reports);
             fitMapToMarkers(reports);
         }
-    }
-
-    function calculateDistance(lat1, lon1, lat2, lon2) {
-        const R = 6371;
-        const dLat = toRad(lat2 - lat1);
-        const dLon = toRad(lon2 - lon1);
-        const a = 
-            Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * 
-            Math.sin(dLon/2) * Math.sin(dLon/2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        return R * c;
-    }
-
-    function toRad(deg) {
-        return deg * (Math.PI/180);
     }
 
     map.on('load', initializeMapWithLocation);
