@@ -1,7 +1,7 @@
 from rest_framework_nested import routers
 from rest_framework.routers import DefaultRouter
 from django.urls import path, include
-from apps.gamification.views.api_trash import trash_report_detail_json, trash_report_edit, trash_report_list, EducationView, trash_report_update, trash_view, list_reports, trash_report_detail, trash_report_create, nearby_reports, change_report_status, add_comment
+from apps.gamification.views.api_trash import create_comment, get_comments, trash_report_detail_json, trash_report_edit, trash_report_list, EducationView, trash_report_update, trash_view, list_reports, trash_report_detail, trash_report_create, nearby_reports, change_report_status, add_comment
 
 app_name = 'gamification'
 
@@ -17,5 +17,6 @@ urlpatterns = [
     path('reports/<int:pk>/status/', change_report_status, name='change-status'),
     path('reports/<int:report_pk>/comments/', add_comment, name='add-comment'),
     path('education/', EducationView.as_view(), name='education'),
-
+    path('api/reports/<int:report_pk>/comments/', get_comments, name='get-comments'),
+    path('api/reports/<int:report_pk>/comments/create/', create_comment, name='create-comment'),
 ]
