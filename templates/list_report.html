@@ -28,7 +28,7 @@
         <div class="list-view">
             <div class="space-y-4 px-4 pt-4">
                 {% for report in page_obj %}
-                <article class="report-card shadow-sm touch-feedback">
+                <article class="report-card shadow-sm touch-feedback" data-report-id="{{ report.id }}">
                     <div class="relative">
                         {% if report.image %}
                         <img data-src="{{ report.image.url }}" 
@@ -71,6 +71,40 @@
                                 <i class="fas fa-edit"></i>
                             </a>
                         </div>
+
+                        <!-- Comments Section -->
+                        <div class="comments-section mt-4 border-t pt-4">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-semibold">Comentarios</h3>
+                                <button class="toggle-comments text-green-600 text-sm">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="comments-container hidden">
+                                <!-- Comment Form -->
+                                <form class="comment-form mb-4">
+                                    <div class="flex gap-2">
+                                        <div class="flex-grow">
+                                            <textarea 
+                                                class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                                                placeholder="Escribe un comentario..."
+                                                rows="1"
+                                            ></textarea>
+                                        </div>
+                                        <button type="submit" 
+                                                class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                                            <i class="fas fa-paper-plane"></i>
+                                        </button>
+                                    </div>
+                                </form>
+
+                                <!-- Comments List -->
+                                <div class="comments-list space-y-4">
+                                    <!-- Dynamic comments will be inserted here -->
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </article>
                 {% empty %}
@@ -96,11 +130,30 @@
        class="create-report-btn touch-feedback">
         <i class="fas fa-plus text-xl"></i>
     </a>
+
+    <!-- Comment Template -->
+    <template id="comment-template">
+        <div class="comment bg-gray-50 rounded-lg p-4">
+            <div class="flex items-start gap-3">
+                <div class="flex-shrink-0">
+                    <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                        <i class="fas fa-user text-gray-400"></i>
+                    </div>
+                </div>
+                <div class="flex-grow">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium text-gray-900"></span>
+                        <span class="text-sm text-gray-500"></span>
+                    </div>
+                    <p class="text-gray-700 mt-1"></p>
+                </div>
+            </div>
+        </div>
+    </template>
 </div>
 {% endblock %}
 
 {% block extra_scripts %}
-
 <!-- Añade esto justo antes del bloque extra_scripts -->
 <script id="reports-data" type="application/json">
     [
@@ -123,4 +176,5 @@
     const maptilerKey = "{{ maptiler_key }}";
 </script>
 <script src="{% static 'js/api_reports.js' %}"></script>
+<script src="{% static 'js/comments.js' %}"></script>
 {% endblock %}
