@@ -313,3 +313,49 @@ class EducationView(TemplateView):
         ]
         
         return context
+    
+@login_required
+@require_http_methods(["GET"])
+def get_comments(request, report_pk):
+    """API endpoint to get comments for a specific report."""
+    comments = ReportComment.objects.filter(report_id=report_pk)\
+        .order_by('-created_at')\
+        .select_related('user')
+    
+    comments_data = [{
+        'id': comment.id,
+        'content': comment.content,
+        'created_at': comment.created_at.isoformat(),
+        'user': comment.user.get_full_name() or comment.user.email
+    } for comment in comments]
+    
+    return JsonResponse(comments_data, safe=False)
+
+@login_required
+@require_http_methods(["POST"])
+def create_comment(request, report_pk):
+    """API endpoint to create a new comment."""
+    try:
+        data = json.loads(request.body)
+        content = data.get('content')
+        
+        if not content:
+            return HttpResponseBadRequest('El contenido del comentario es requerido')
+        
+        report = get_object_or_404(TrashReport, pk=report_pk)
+        comment = ReportComment.objects.create(
+            report=report,
+            user=request.user,
+            content=content
+        )
+        
+        return JsonResponse({
+            'id': comment.id,
+            'content': comment.content,
+            'created_at': comment.created_at.isoformat(),
+            'user': comment.user.get_full_name() or comment.user.email
+        })
+    except json.JSONDecodeError:
+        return HttpResponseBadRequest('Invalid JSON')
+    except Exception as e:
+        return HttpResponseBadRequest(str(e))
