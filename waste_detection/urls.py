@@ -14,12 +14,21 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import os
 from django.contrib import admin
 from django.urls import include, path
 from waste_detection import settings
 from django.conf.urls.static import static
 from apps.waste.views.home import HomeView
 from django.views.generic.base import RedirectView
+from django.http import HttpResponse
+from django.views.decorators.cache import cache_control
+
+@cache_control(max_age=0, no_cache=True, no_store=True, must_revalidate=True)
+def service_worker(request):
+    sw_path = os.path.join(settings.STATIC_ROOT, 'js', 'sw.js')
+    response = HttpResponse(open(sw_path).read(), content_type='application/javascript')
+    return response
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,7 +37,8 @@ urlpatterns = [
     path('recycling_points/', include('apps.recycling_points.urls', namespace='recycling_points')),
     path('gamification/', include('apps.gamification.urls', namespace='gamification')),
     path("", HomeView.as_view(), name="home"),
-    path('favicon.ico', RedirectView.as_view(url='https://s3-srd-project.s3.us-east-2.amazonaws.com/img/favicon.ico')),
+    path('favicon.ico', RedirectView.as_view(url='/static/img/favicon.ico')),
+    path('sw.js', service_worker, name='service_worker'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
