@@ -1,10 +1,10 @@
 const CACHE_NAME = 'smartwaste-v1';
 const urlsToCache = [
     '/',
-    '/static/css/styles.css',
-    '/static/js/main.js',
-    '/static/icons/android-launchericon-192-192.png',
-    '/static/icons/android-launchericon-512-512.png',
+    '/css/styles.css',
+    '/js/main.js',
+    '/icons/android-launchericon-192-192.png',
+    '/icons/android-launchericon-512-512.png',
     'https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css',
     'https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css'
