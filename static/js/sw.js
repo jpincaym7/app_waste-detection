@@ -1,8 +1,8 @@
 const CACHE_NAME = 'smartwaste-v1';
 const urlsToCache = [
     '/',
-    '/css/styles.css',
-    '/js/main.js',
+    'https://s3-srd-project.s3.us-east-2.amazonaws.com/css/styles.css',
+    'https://s3-srd-project.s3.us-east-2.amazonaws.com/js/main.js',
     '/icons/android-launchericon-192-192.png',
     '/icons/android-launchericon-512-512.png',
     'https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css',
