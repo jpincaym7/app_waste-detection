@@ -199,7 +199,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')  // Nota: URL relativa desde la raíz
+                navigator.serviceWorker.register('/service-worker.js')  // Nota: URL relativa desde la raíz
                     .then((registration) => {
                         console.log('ServiceWorker registration successful');
                     })
