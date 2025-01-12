@@ -152,3 +152,67 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 1500);
 });
+
+let deferredPrompt;
+const installButton = document.getElementById('installPWA');
+
+// Check if device is mobile
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+// Check if the app can be installed (PWA criteria met)
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+
+    // Show install button only on mobile devices
+    if (isMobile) {
+        installButton.classList.remove('hidden');
+    }
+});
+
+// Handle the install button click
+installButton.addEventListener('click', async (e) => {
+    e.preventDefault();
+    
+    if (!deferredPrompt) return;
+
+    // Show install prompt
+    deferredPrompt.prompt();
+    
+    // Wait for user choice
+    const { outcome } = await deferredPrompt.userChoice;
+    
+    if (outcome === 'accepted') {
+        console.log('User accepted the install prompt');
+        installButton.classList.add('hidden');
+    }
+    
+    // Clear the deferredPrompt
+    deferredPrompt = null;
+});
+
+// Hide button when PWA is installed
+window.addEventListener('appinstalled', () => {
+    installButton.classList.add('hidden');
+    deferredPrompt = null;
+});
+
+// Special handling for iOS
+if (isMobile && /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.matchMedia('(display-mode: standalone)').matches) {
+    installButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Instalar SmartWaste',
+            html: `
+                Para instalar la app en iOS:<br>
+                1. Toca el botón compartir <i class="fas fa-share-square"></i><br>
+                2. Desplázate y selecciona "Añadir a pantalla de inicio" <i class="fas fa-plus-square"></i>
+            `,
+            icon: 'info',
+            confirmButtonText: 'Entendido',
+            confirmButtonColor: '#059669'
+        });
+    });
+    
+    installButton.classList.remove('hidden');
+}
