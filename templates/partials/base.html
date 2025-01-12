@@ -14,6 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
     <!-- Añade esto en el head -->
     <link rel="manifest" href="{% static 'manifest.json' %}">
     <!-- PWA META TAGS -->
@@ -198,7 +199,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('{% static "js/sw.js" %}')
+                navigator.serviceWorker.register('/sw.js')  // Nota: URL relativa desde la raíz
                     .then((registration) => {
                         console.log('ServiceWorker registration successful');
                     })
