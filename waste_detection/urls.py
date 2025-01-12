@@ -37,7 +37,7 @@ urlpatterns = [
     path('recycling_points/', include('apps.recycling_points.urls', namespace='recycling_points')),
     path('gamification/', include('apps.gamification.urls', namespace='gamification')),
     path("", HomeView.as_view(), name="home"),
-    path('favicon.ico', RedirectView.as_view(url='/static/img/favicon.ico')),
+    path('favicon.ico', RedirectView.as_view(url='/img/favicon.ico')),
     path('sw.js', service_worker, name='service_worker'),
 ]
 if settings.DEBUG:
