@@ -22,6 +22,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="SmartWaste">
     <meta name="apple-mobile-web-app-title" content="SmartWaste">
+    <meta name="msapplication-starturl" content="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="theme-color" content="#059669">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     {% block extra_head %}{% endblock %}
@@ -185,10 +187,10 @@
                 <i class="fas fa-book"></i>
                 <span>Aprende</span>
             </a>
-            <a id="installPWA" href="#" class="nav-item hidden">
+            <button id="installPWA" class="nav-item hidden">
                 <i class="fas fa-download"></i>
                 <span>Instalar App</span>
-            </a>
+            </button>
         </div>
     </nav>
 
@@ -197,14 +199,63 @@
     <script src="{% static 'js/main.js' %}"></script>
     <!-- Al final del body, antes de los otros scripts -->
     <script>
+        let deferredPrompt = null;
+        const installButton = document.querySelector('#installPWA');
+
+        // Check if app is already installed
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            installButton.classList.add('hidden');
+        }
+
+        // Handle installation prompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installButton.classList.remove('hidden');
+        });
+
+        // Handle install button click
+        installButton.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+
+            try {
+                const result = await deferredPrompt.prompt();
+                if (result.outcome === 'accepted') {
+                    console.log('Usuario aceptó instalar la app');
+                    installButton.classList.add('hidden');
+                } else {
+                    console.log('Usuario rechazó la instalación');
+                }
+            } catch (err) {
+                console.error('Error al instalar:', err);
+            } finally {
+                deferredPrompt = null;
+            }
+        });
+
+        // Handle successful installation
+        window.addEventListener('appinstalled', (e) => {
+            console.log('Aplicación instalada exitosamente');
+            installButton.classList.add('hidden');
+            // Show success toast
+            Swal.fire({
+                title: '¡Instalación Exitosa!',
+                text: 'SmartWaste ha sido instalada en tu dispositivo',
+                icon: 'success',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        });
+
+        // Service Worker Registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js')  // Nota: URL relativa desde la raíz
-                    .then((registration) => {
-                        console.log('ServiceWorker registration successful');
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registrado exitosamente:', registration);
                     })
-                    .catch((err) => {
-                        console.log('ServiceWorker registration failed: ', err);
+                    .catch(err => {
+                        console.error('Error al registrar ServiceWorker:', err);
                     });
             });
         }
