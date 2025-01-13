@@ -153,105 +153,114 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 1500);
 });
 
-// Variables globales
+// Variables for PWA installation
 let deferredPrompt;
 const installButton = document.getElementById('installPWA');
 
-// Función para mostrar el botón de instalación
-function showInstallButton() {
-    if (installButton) {
-        installButton.classList.remove('hidden');
-    }
+// Function to detect Android device
+function isAndroidDevice() {
+    const userAgent = navigator.userAgent.toLowerCase();
+    return userAgent.includes('android');
 }
 
-// Función para ocultar el botón de instalación
-function hideInstallButton() {
-    if (installButton) {
-        installButton.classList.add('hidden');
-    }
+// Function to show install confirmation
+function showInstallConfirmation() {
+    return Swal.fire({
+        title: '¿Instalar SmartWaste?',
+        text: 'Instala nuestra aplicación para una mejor experiencia',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#059669',
+        cancelButtonColor: '#dc2626',
+        confirmButtonText: 'Sí, instalar',
+        cancelButtonText: 'No, gracias'
+    });
 }
 
-// Detectar si es dispositivo móvil
-const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-// Detectar si es iOS
-const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-
-// Mostrar el botón de instalación solo en móviles
-if (isMobile) {
-    showInstallButton();
+// Function to show device not supported message
+function showDeviceNotSupported() {
+    Swal.fire({
+        title: 'Dispositivo no compatible',
+        text: 'La instalación solo está disponible para dispositivos Android',
+        icon: 'warning',
+        confirmButtonColor: '#059669',
+        timer: 3000,
+        timerProgressBar: true
+    });
 }
 
-// Capturar el evento beforeinstallprompt
+// Handle the beforeinstallprompt event
 window.addEventListener('beforeinstallprompt', (e) => {
-    // Prevenir que Chrome muestre su propio prompt
-    e.preventDefault();
-    // Guardar el evento para usarlo después
-    deferredPrompt = e;
-    // Mostrar el botón de instalación
-    showInstallButton();
-});
-
-// Manejar el clic en el botón de instalación
-installButton.addEventListener('click', async (e) => {
+    // Prevent Chrome 67 and earlier from automatically showing the prompt
     e.preventDefault();
     
-    // Para dispositivos iOS, mostrar instrucciones especiales
-    if (isIOS) {
-        Swal.fire({
-            title: 'Instalar SmartWaste',
-            html: `
-                Para instalar la app en iOS:<br>
-                1. Toca el botón compartir <i class="fas fa-share-square"></i><br>
-                2. Desplázate y selecciona "Añadir a pantalla de inicio" <i class="fas fa-plus-square"></i>
-            `,
-            icon: 'info',
-            confirmButtonText: 'Entendido',
-            confirmButtonColor: '#059669'
-        });
+    // Only proceed if it's an Android device
+    if (isAndroidDevice()) {
+        // Stash the event so it can be triggered later
+        deferredPrompt = e;
+        // Show the install button
+        installButton.classList.remove('hidden');
+    } else {
+        // Hide the install button for non-Android devices
+        installButton.classList.add('hidden');
+    }
+});
+
+// Installation button click handler
+installButton.addEventListener('click', async (e) => {
+    if (!isAndroidDevice()) {
+        showDeviceNotSupported();
         return;
     }
 
-    // Para otros dispositivos (principalmente Android)
-    if (deferredPrompt) {
-        try {
-            // Mostrar el prompt de instalación
-            deferredPrompt.prompt();
-            
-            // Esperar la respuesta del usuario
-            const { outcome } = await deferredPrompt.userChoice;
-            
-            if (outcome === 'accepted') {
-                console.log('Usuario aceptó instalar la PWA');
-                hideInstallButton();
+    // Show confirmation dialog
+    const result = await showInstallConfirmation();
+    
+    if (result.isConfirmed) {
+        // Hide the installation button
+        installButton.classList.add('hidden');
+        
+        // Show the prompt
+        deferredPrompt.prompt();
+        
+        // Wait for the user to respond to the prompt
+        deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                console.log('User accepted the PWA installation');
+                showInstallationSuccess();
             } else {
-                console.log('Usuario rechazó instalar la PWA');
+                console.log('User dismissed the PWA installation');
+                // Show the button again in case they want to install later
+                installButton.classList.remove('hidden');
             }
             
-            // Limpiar el prompt guardado
+            // Clear the deferredPrompt variable
             deferredPrompt = null;
-        } catch (error) {
-            console.error('Error al intentar instalar la PWA:', error);
-        }
-    } else {
-        // Si no hay prompt disponible pero tampoco es iOS, probablemente ya está instalada
-        Swal.fire({
-            title: 'Instalación no disponible',
-            text: 'La aplicación ya está instalada o no se puede instalar en este momento.',
-            icon: 'info',
-            confirmButtonColor: '#059669'
         });
     }
 });
 
-// Ocultar el botón cuando la PWA ya está instalada
-window.addEventListener('appinstalled', () => {
-    console.log('PWA instalada exitosamente');
-    hideInstallButton();
-    deferredPrompt = null;
+// Handle successful installation
+window.addEventListener('appinstalled', (evt) => {
+    // Hide the install button after successful installation
+    installButton.classList.add('hidden');
+    console.log('PWA was installed');
 });
 
-// Verificar si la app ya está instalada al cargar
-if (window.matchMedia('(display-mode: standalone)').matches) {
-    hideInstallButton();
+// Function to show success message using SweetAlert2
+function showInstallationSuccess() {
+    Swal.fire({
+        icon: 'success',
+        title: '¡Instalación Exitosa!',
+        text: 'La aplicación ha sido instalada correctamente',
+        confirmButtonColor: '#059669',
+        timer: 3000,
+        timerProgressBar: true
+    });
+}
+
+// Check if the app is running in standalone mode (already installed)
+if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+    // Hide install button if app is already installed
+    installButton.classList.add('hidden');
 }
