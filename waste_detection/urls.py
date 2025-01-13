@@ -21,22 +21,6 @@ from waste_detection import settings
 from django.conf.urls.static import static
 from apps.waste.views.home import HomeView
 from django.views.generic.base import RedirectView
-import requests
-from django.http import HttpResponse, Http404
-from django.views.decorators.cache import cache_control
-
-@cache_control(max_age=0, no_cache=True, no_store=True, must_revalidate=True)
-def service_worker(request):
-    s3_url = "https://s3-srd-project.s3.us-east-2.amazonaws.com/js/sw.js"
-
-    try:
-        response = requests.get(s3_url)
-        if response.status_code == 200:
-            return HttpResponse(response.content, content_type="application/javascript")
-        else:
-            raise Http404("Service Worker not found on S3.")
-    except requests.RequestException as e:
-        raise Http404(f"Error fetching Service Worker: {e}")
 
 
 urlpatterns = [
@@ -47,7 +31,6 @@ urlpatterns = [
     path('gamification/', include('apps.gamification.urls', namespace='gamification')),
     path("", HomeView.as_view(), name="home"),
     path('favicon.ico', RedirectView.as_view(url='https://s3-srd-project.s3.us-east-2.amazonaws.com/img/favicon.ico')),
-    path('service-worker.js', service_worker, name='service_worker'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
