@@ -9,7 +9,7 @@
   "orientation": "portrait",
   "icons": [
       {
-          "src": "/static/icons/android-launchericon-72-72.png",
+          "src": "https://s3-srd-project.s3.us-east-2.amazonaws.com/icons/android-launchericon-72-72.png",
           "sizes": "72x72",
           "type": "image/png"
       },
