@@ -201,62 +201,96 @@
     <script>
         let deferredPrompt = null;
         const installButton = document.querySelector('#installPWA');
-
-        // Check if app is already installed
-        if (window.matchMedia('(display-mode: standalone)').matches) {
+        
+        // Verificar si la app ya está instalada
+        const isAppInstalled = () => {
+            return window.matchMedia('(display-mode: standalone)').matches || 
+                   window.navigator.standalone || 
+                   document.referrer.includes('android-app://');
+        };
+        
+        if (isAppInstalled()) {
             installButton.classList.add('hidden');
+        } else {
+            // Mostrar el botón solo si la app puede ser instalada
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                installButton.classList.remove('hidden');
+                
+                // Log para debugging
+                console.log('beforeinstallprompt triggered');
+            });
         }
-
-        // Handle installation prompt
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installButton.classList.remove('hidden');
-        });
-
-        // Handle install button click
+        
         installButton.addEventListener('click', async () => {
-            if (!deferredPrompt) return;
-
+            if (!deferredPrompt) {
+                console.log('No hay prompt de instalación disponible');
+                return;
+            }
+        
             try {
+                // Log para debugging
+                console.log('Intentando mostrar el prompt de instalación');
+                
                 const result = await deferredPrompt.prompt();
+                console.log('Resultado del prompt:', result);
+                
                 if (result.outcome === 'accepted') {
                     console.log('Usuario aceptó instalar la app');
                     installButton.classList.add('hidden');
+                    
+                    // Mostrar toast de éxito
+                    Swal.fire({
+                        title: '¡Instalación Exitosa!',
+                        text: 'SmartWaste ha sido instalada en tu dispositivo',
+                        icon: 'success',
+                        timer: 3000,
+                        showConfirmButton: false
+                    });
                 } else {
                     console.log('Usuario rechazó la instalación');
+                    // Mostrar mensaje de rechazo
+                    Swal.fire({
+                        title: 'Instalación cancelada',
+                        text: 'Puedes instalar la app más tarde si lo deseas',
+                        icon: 'info',
+                        timer: 3000,
+                        showConfirmButton: false
+                    });
                 }
             } catch (err) {
                 console.error('Error al instalar:', err);
+                // Mostrar error al usuario
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Hubo un problema al intentar instalar la app',
+                    icon: 'error',
+                    timer: 3000,
+                    showConfirmButton: false
+                });
             } finally {
                 deferredPrompt = null;
             }
         });
-
-        // Handle successful installation
+        
+        // Manejar la instalación exitosa
         window.addEventListener('appinstalled', (e) => {
             console.log('Aplicación instalada exitosamente');
             installButton.classList.add('hidden');
-            // Show success toast
-            Swal.fire({
-                title: '¡Instalación Exitosa!',
-                text: 'SmartWaste ha sido instalada en tu dispositivo',
-                icon: 'success',
-                timer: 3000,
-                showConfirmButton: false
-            });
         });
-
-        // Service Worker Registration
+        
+        // Registro del Service Worker con mejor manejo de errores
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registrado exitosamente:', registration);
-                    })
-                    .catch(err => {
-                        console.error('Error al registrar ServiceWorker:', err);
+            window.addEventListener('load', async () => {
+                try {
+                    const registration = await navigator.serviceWorker.register('/service-worker.js', {
+                        scope: '/'
                     });
+                    console.log('ServiceWorker registrado exitosamente:', registration);
+                } catch (err) {
+                    console.error('Error al registrar ServiceWorker:', err);
+                }
             });
         }
     </script>
