@@ -22,7 +22,6 @@ from django.conf.urls.static import static
 from apps.waste.views.home import HomeView
 from django.views.generic.base import RedirectView
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('waste/', include('apps.waste.urls', namespace='waste')),
