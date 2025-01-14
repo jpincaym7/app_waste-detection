@@ -5,6 +5,11 @@ const wasteCrafts = {
             {
                 title: 'Portalápices Decorativo',
                 materials: ['Lata limpia', 'Pintura en spray', 'Papel decorativo', 'Pegamento', 'Tijeras'],
+                image: {
+                    src: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/portalapices.jpg',
+                    alt: 'Portalápices decorativo hecho con lata reciclada',
+                    thumbnail: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/portalapices.jpg'
+                },
                 steps: [
                     'Limpiar bien la lata y quitar etiquetas',
                     'Pintar la lata con el color base deseado',
@@ -15,6 +20,11 @@ const wasteCrafts = {
             {
                 title: 'Macetero Reciclado',
                 materials: ['Lata grande', 'Pintura resistente al agua', 'Piedras pequeñas', 'Taladro o clavo para drenaje'],
+                image: {
+                    src: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/Macetero.jpg',
+                    alt: 'Portalápices decorativo hecho con lata reciclada',
+                    thumbnail: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/Macetero.jpg'
+                },
                 steps: [
                     'Hacer agujeros de drenaje en el fondo',
                     'Pintar la lata con diseños a elección',
@@ -30,6 +40,11 @@ const wasteCrafts = {
             {
                 title: 'Organizador de Escritorio',
                 materials: ['Cajas de cartón', 'Papel decorativo', 'Tijeras', 'Pegamento', 'Regla'],
+                image: {
+                    src: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/organizador.jpg',
+                    alt: 'Portalápices decorativo hecho con lata reciclada',
+                    thumbnail: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/organizador.jpg'
+                },
                 steps: [
                     'Cortar las cajas al tamaño deseado',
                     'Forrar con papel decorativo',
@@ -40,6 +55,11 @@ const wasteCrafts = {
             {
                 title: 'Marco de Fotos',
                 materials: ['Cartón grueso', 'Pintura', 'Tijeras', 'Papel decorativo', 'Pegamento'],
+                image: {
+                    src: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/marco.jpg',
+                    alt: 'Portalápices decorativo hecho con lata reciclada',
+                    thumbnail: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/marco.jpg'
+                },
                 steps: [
                     'Cortar dos rectángulos de cartón: uno con ventana para la foto',
                     'Decorar con pintura o papel',
@@ -55,6 +75,11 @@ const wasteCrafts = {
             {
                 title: 'Portavelas Decorativo',
                 materials: ['Frasco de vidrio limpio', 'Pintura para vidrio', 'Cinta decorativa', 'Vela pequeña'],
+                image: {
+                    src: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/portavelas.jpg',
+                    alt: 'Portalápices decorativo hecho con lata reciclada',
+                    thumbnail: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/portavelas.jpg'
+                },
                 steps: [
                     'Limpiar y secar bien el frasco',
                     'Pintar con diseños a elección',
@@ -65,6 +90,11 @@ const wasteCrafts = {
             {
                 title: 'Terrario Mini Jardín',
                 materials: ['Frasco grande de vidrio', 'Piedras pequeñas', 'Tierra para plantas', 'Plantas pequeñas', 'Carbón activado'],
+                image: {
+                    src: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/Terrario.jpg',
+                    alt: 'Portalápices decorativo hecho con lata reciclada',
+                    thumbnail: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/Terrario.jpg'
+                },
                 steps: [
                     'Colocar capa de piedras para drenaje',
                     'Agregar capa de carbón activado',
@@ -80,6 +110,11 @@ const wasteCrafts = {
             {
                 title: 'Campanas de Viento',
                 materials: ['Piezas metálicas variadas', 'Cuerda resistente', 'Herramientas para perforar', 'Pinturas para metal'],
+                image: {
+                    src: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/campanas.jpg',
+                    alt: 'Portalápices decorativo hecho con lata reciclada',
+                    thumbnail: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/campanas.jpg'
+                },
                 steps: [
                     'Limpiar y preparar las piezas metálicas',
                     'Hacer agujeros para colgar',
@@ -90,6 +125,11 @@ const wasteCrafts = {
             {
                 title: 'Decoración de Jardín',
                 materials: ['Objetos metálicos variados', 'Pintura para exterior', 'Alambre', 'Herramientas básicas'],
+                image: {
+                    src: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/jardin-decoracion.jpg',
+                    alt: 'Portalápices decorativo hecho con lata reciclada',
+                    thumbnail: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/jardin-decoracion.jpg'
+                },
                 steps: [
                     'Seleccionar y limpiar las piezas',
                     'Pintar con colores resistentes al exterior',
@@ -105,6 +145,11 @@ const wasteCrafts = {
             {
                 title: 'Papel Reciclado Artesanal',
                 materials: ['Papel usado', 'Agua', 'Bastidor con malla', 'Recipiente grande', 'Decoraciones (opcional)'],
+                image: {
+                    src: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/papel-artesanal.jpg',
+                    alt: 'Portalápices decorativo hecho con lata reciclada',
+                    thumbnail: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/papel-artesanal.jpg'
+                },
                 steps: [
                     'Triturar el papel en pequeños pedazos',
                     'Remojar en agua por 24 horas',
@@ -115,6 +160,11 @@ const wasteCrafts = {
             {
                 title: 'Origami Decorativo',
                 materials: ['Papel usado (un lado limpio)', 'Tijeras', 'Regla', 'Lápiz'],
+                image: {
+                    src: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/origami.jpg',
+                    alt: 'Portalápices decorativo hecho con lata reciclada',
+                    thumbnail: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/origami.jpg'
+                },
                 steps: [
                     'Cortar papel en cuadrados perfectos',
                     'Seguir patrones de doblado básico',
@@ -130,6 +180,11 @@ const wasteCrafts = {
             {
                 title: 'Maceteros Colgantes',
                 materials: ['Envases de plástico grandes', 'Cuerda resistente', 'Tijeras', 'Pintura para plástico'],
+                image: {
+                    src: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/macetero-colgante.jpg',
+                    alt: 'Portalápices decorativo hecho con lata reciclada',
+                    thumbnail: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/macetero-colgante.jpg'
+                },
                 steps: [
                     'Limpiar bien los envases',
                     'Hacer agujeros para drenaje y colgar',
@@ -140,6 +195,11 @@ const wasteCrafts = {
             {
                 title: 'Organizador de Juguetes',
                 materials: ['Envases de plástico grandes', 'Cinta adhesiva decorativa', 'Tijeras', 'Etiquetas'],
+                image: {
+                    src: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/organizado-juguetes.png',
+                    alt: 'Portalápices decorativo hecho con lata reciclada',
+                    thumbnail: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/organizado-juguetes.png'
+                },
                 steps: [
                     'Limpiar y quitar etiquetas',
                     'Cortar aperturas si es necesario',
@@ -155,6 +215,11 @@ const wasteCrafts = {
             {
                 title: 'Huerto Vertical',
                 materials: ['Botellas plásticas grandes', 'Cuerda resistente', 'Tijeras', 'Tierra para plantas'],
+                image: {
+                    src: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/huerto-vertical.png',
+                    alt: 'Portalápices decorativo hecho con lata reciclada',
+                    thumbnail: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/huerto-vertical.png'
+                },
                 steps: [
                     'Cortar un lateral de la botella',
                     'Hacer agujeros de drenaje',
@@ -165,6 +230,11 @@ const wasteCrafts = {
             {
                 title: 'Comedero para Pájaros',
                 materials: ['Botella plástica limpia', 'Palitos de madera', 'Cuerda', 'Tijeras'],
+                image: {
+                    src: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/comedero.jpg',
+                    alt: 'Portalápices decorativo hecho con lata reciclada',
+                    thumbnail: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/comedero.jpg'
+                },
                 steps: [
                     'Hacer pequeños agujeros para perchar',
                     'Crear aberturas para el alimento',
@@ -183,7 +253,6 @@ function openCraftsModal(searchTerm) {
     const closeButton = document.getElementById('closeButton');
     const modalTitle = document.querySelector('.modal-title');
     
-    // Encontrar el tipo de residuo correcto
     const wasteEntry = Object.entries(wasteCrafts).find(([key, value]) => {
         const searchTermLower = searchTerm.toLowerCase();
         return value.label.toLowerCase() === searchTermLower || 
@@ -197,25 +266,33 @@ function openCraftsModal(searchTerm) {
     
     const [wasteType, craftsData] = wasteEntry;
     
-    // Limpiar y llenar la lista de manualidades
+    // Actualizar la lista de manualidades con imágenes
     craftsList.innerHTML = '';
     craftsData.crafts.forEach((craft, index) => {
         const craftCard = document.createElement('div');
         craftCard.className = 'craft-card';
         craftCard.innerHTML = `
-            <h3>${craft.title}</h3>
-            <p>${craft.materials.length} materiales • ${craft.steps.length} pasos</p>
+            <div class="craft-thumbnail">
+                <img 
+                    src="${craft.image.thumbnail}" 
+                    alt="${craft.image.alt}"
+                    loading="lazy"
+                    class="craft-image"
+                />
+            </div>
+            <div class="craft-info">
+                <h3>${craft.title}</h3>
+                <p>${craft.materials.length} materiales • ${craft.steps.length} pasos</p>
+            </div>
         `;
         
         craftCard.addEventListener('click', () => showCraftDetails(craft));
         craftsList.appendChild(craftCard);
     });
     
-    // Mostrar el modal
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
     
-    // Función para mostrar detalles
     function showCraftDetails(craft) {
         craftsList.style.display = 'none';
         craftDetails.classList.remove('hidden');
@@ -223,7 +300,26 @@ function openCraftsModal(searchTerm) {
         backButton.classList.remove('hidden');
         modalTitle.textContent = craft.title;
         
-        // Actualizar materiales - Eliminado el span con el punto verde
+        // Agregar imagen principal en los detalles
+        const imageContainer = craftDetails.querySelector('.craft-image-container') || document.createElement('div');
+        imageContainer.className = 'craft-image-container';
+        imageContainer.innerHTML = `
+            <img 
+                src="${craft.image.src}" 
+                alt="${craft.image.alt}"
+                class="craft-detail-image"
+                loading="lazy"
+            />
+        `;
+        
+        // Asegurarse de que el contenedor de imagen esté en la posición correcta
+        const firstChild = craftDetails.firstChild;
+        if (firstChild) {
+            craftDetails.insertBefore(imageContainer, firstChild);
+        } else {
+            craftDetails.appendChild(imageContainer);
+        }
+        
         const materialsList = craftDetails.querySelector('.materials-list');
         materialsList.innerHTML = craft.materials
             .map(material => `
@@ -232,7 +328,6 @@ function openCraftsModal(searchTerm) {
                 </li>
             `).join('');
         
-        // Actualizar pasos - Eliminado el span con el número
         const stepsList = craftDetails.querySelector('.steps-list');
         stepsList.innerHTML = craft.steps
             .map(step => `
@@ -242,7 +337,6 @@ function openCraftsModal(searchTerm) {
             `).join('');
     }
     
-    // Función para ocultar detalles
     function hideDetails() {
         craftsList.style.display = 'block';
         craftDetails.classList.add('hidden');
@@ -251,7 +345,6 @@ function openCraftsModal(searchTerm) {
         modalTitle.textContent = 'Manualidades Creativas';
     }
     
-    // Event Listeners
     backButton.onclick = hideDetails;
     
     closeButton.onclick = () => {
@@ -260,7 +353,6 @@ function openCraftsModal(searchTerm) {
         hideDetails();
     };
     
-    // Cerrar al hacer clic en el overlay
     modal.querySelector('.modal-overlay').onclick = (e) => {
         if (e.target === e.currentTarget) {
             closeButton.click();
