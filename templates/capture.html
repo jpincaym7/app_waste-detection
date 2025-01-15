@@ -9,6 +9,7 @@
 
 {% block content %}
 <div class="flex flex-col space-y-4">
+    
     <!-- Tabs de Navegación -->
     <div class="bg-white rounded-lg shadow-md overflow-hidden">
         <div class="flex">
@@ -91,6 +92,9 @@
         <div id="detectionResults" class="p-4 space-y-6">
         </div>
     </div>
+
+    {% include 'partials/stats.html' %}
+
 </div>
 <div id="craftsModal" class="modal-container hidden">
     <div class="modal-overlay"></div>
@@ -137,4 +141,20 @@
 {% block extra_scripts %}
     <script src="{% static 'js/camera.js' %}"></script>
     <script src="{% static 'js/crafts_modal.js' %}"></script>
+    <script src="{% static 'js/gamification.js' %}"></script>
+    <script>
+    // Inicializar los valores de gamificación cuando la página carga
+    document.addEventListener('DOMContentLoaded', function() {
+        const userStats = {{ user_stats|safe }};
+        
+        // Actualizar la UI con los valores iniciales
+        const gamification = new GamificationSystem();
+        gamification.updateUI({
+            points: userStats.points,
+            level: userStats.level,
+            total_detections: userStats.total_detections,
+            badges: userStats.badges
+        });
+    });
+</script>
 {% endblock %}
