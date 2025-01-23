@@ -6,9 +6,9 @@ const wasteCrafts = {
                 title: 'Portalápices Decorativo',
                 materials: ['Lata limpia', 'Pintura en spray', 'Papel decorativo', 'Pegamento', 'Tijeras'],
                 image: {
-                    src: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/portalapices.jpg',
+                    src: '/static/img/portalapices.jpg',
                     alt: 'Portalápices decorativo hecho con lata reciclada',
-                    thumbnail: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/portalapices.jpg'
+                    thumbnail: '/static/img/portalapices.jpg'
                 },
                 steps: [
                     'Limpiar bien la lata y quitar etiquetas',
@@ -21,9 +21,9 @@ const wasteCrafts = {
                 title: 'Macetero Reciclado',
                 materials: ['Lata grande', 'Pintura resistente al agua', 'Piedras pequeñas', 'Taladro o clavo para drenaje'],
                 image: {
-                    src: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/Macetero.jpg',
+                    src: '/static/img/Macetero.jpg',
                     alt: 'Portalápices decorativo hecho con lata reciclada',
-                    thumbnail: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/Macetero.jpg'
+                    thumbnail: '/static/img/Macetero.jpg'
                 },
                 steps: [
                     'Hacer agujeros de drenaje en el fondo',
@@ -41,9 +41,9 @@ const wasteCrafts = {
                 title: 'Organizador de Escritorio',
                 materials: ['Cajas de cartón', 'Papel decorativo', 'Tijeras', 'Pegamento', 'Regla'],
                 image: {
-                    src: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/organizador.jpg',
+                    src: '/static/img/organizador.jpg',
                     alt: 'Portalápices decorativo hecho con lata reciclada',
-                    thumbnail: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/organizador.jpg'
+                    thumbnail: '/static/img/organizador.jpg'
                 },
                 steps: [
                     'Cortar las cajas al tamaño deseado',
@@ -56,9 +56,9 @@ const wasteCrafts = {
                 title: 'Marco de Fotos',
                 materials: ['Cartón grueso', 'Pintura', 'Tijeras', 'Papel decorativo', 'Pegamento'],
                 image: {
-                    src: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/marco.jpg',
+                    src: '/static/img/marco.jpg',
                     alt: 'Portalápices decorativo hecho con lata reciclada',
-                    thumbnail: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/marco.jpg'
+                    thumbnail: '/static/img/marco.jpg'
                 },
                 steps: [
                     'Cortar dos rectángulos de cartón: uno con ventana para la foto',
@@ -76,9 +76,9 @@ const wasteCrafts = {
                 title: 'Portavelas Decorativo',
                 materials: ['Frasco de vidrio limpio', 'Pintura para vidrio', 'Cinta decorativa', 'Vela pequeña'],
                 image: {
-                    src: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/portavelas.jpg',
+                    src: '/static/img/portavelas.jpg',
                     alt: 'Portalápices decorativo hecho con lata reciclada',
-                    thumbnail: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/portavelas.jpg'
+                    thumbnail: '/static/img/portavelas.jpg'
                 },
                 steps: [
                     'Limpiar y secar bien el frasco',
@@ -91,9 +91,9 @@ const wasteCrafts = {
                 title: 'Terrario Mini Jardín',
                 materials: ['Frasco grande de vidrio', 'Piedras pequeñas', 'Tierra para plantas', 'Plantas pequeñas', 'Carbón activado'],
                 image: {
-                    src: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/Terrario.jpg',
+                    src: '/static/img/Terrario.jpg',
                     alt: 'Portalápices decorativo hecho con lata reciclada',
-                    thumbnail: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/Terrario.jpg'
+                    thumbnail: '/static/img/Terrario.jpg'
                 },
                 steps: [
                     'Colocar capa de piedras para drenaje',
@@ -111,9 +111,9 @@ const wasteCrafts = {
                 title: 'Campanas de Viento',
                 materials: ['Piezas metálicas variadas', 'Cuerda resistente', 'Herramientas para perforar', 'Pinturas para metal'],
                 image: {
-                    src: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/campanas.jpg',
+                    src: '/static/img/campanas.jpg',
                     alt: 'Portalápices decorativo hecho con lata reciclada',
-                    thumbnail: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/campanas.jpg'
+                    thumbnail: '/static/img/campanas.jpg'
                 },
                 steps: [
                     'Limpiar y preparar las piezas metálicas',
@@ -126,9 +126,9 @@ const wasteCrafts = {
                 title: 'Decoración de Jardín',
                 materials: ['Objetos metálicos variados', 'Pintura para exterior', 'Alambre', 'Herramientas básicas'],
                 image: {
-                    src: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/jardin-decoracion.jpg',
+                    src: '/static/img/jardin-decoracion.jpg',
                     alt: 'Portalápices decorativo hecho con lata reciclada',
-                    thumbnail: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/jardin-decoracion.jpg'
+                    thumbnail: '/static/img/jardin-decoracion.jpg'
                 },
                 steps: [
                     'Seleccionar y limpiar las piezas',
@@ -146,9 +146,9 @@ const wasteCrafts = {
                 title: 'Papel Reciclado Artesanal',
                 materials: ['Papel usado', 'Agua', 'Bastidor con malla', 'Recipiente grande', 'Decoraciones (opcional)'],
                 image: {
-                    src: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/papel-artesanal.jpg',
+                    src: '/static/img/papel-artesanal.jpg',
                     alt: 'Portalápices decorativo hecho con lata reciclada',
-                    thumbnail: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/papel-artesanal.jpg'
+                    thumbnail: '/static/img/papel-artesanal.jpg'
                 },
                 steps: [
                     'Triturar el papel en pequeños pedazos',
@@ -161,9 +161,9 @@ const wasteCrafts = {
                 title: 'Origami Decorativo',
                 materials: ['Papel usado (un lado limpio)', 'Tijeras', 'Regla', 'Lápiz'],
                 image: {
-                    src: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/origami.jpg',
+                    src: '/static/img/origami.jpg',
                     alt: 'Portalápices decorativo hecho con lata reciclada',
-                    thumbnail: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/origami.jpg'
+                    thumbnail: '/static/img/origami.jpg'
                 },
                 steps: [
                     'Cortar papel en cuadrados perfectos',
@@ -181,9 +181,9 @@ const wasteCrafts = {
                 title: 'Maceteros Colgantes',
                 materials: ['Envases de plástico grandes', 'Cuerda resistente', 'Tijeras', 'Pintura para plástico'],
                 image: {
-                    src: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/macetero-colgante.jpg',
+                    src: '/static/img/macetero-colgante.jpg',
                     alt: 'Portalápices decorativo hecho con lata reciclada',
-                    thumbnail: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/macetero-colgante.jpg'
+                    thumbnail: '/static/img/macetero-colgante.jpg'
                 },
                 steps: [
                     'Limpiar bien los envases',
@@ -196,9 +196,9 @@ const wasteCrafts = {
                 title: 'Organizador de Juguetes',
                 materials: ['Envases de plástico grandes', 'Cinta adhesiva decorativa', 'Tijeras', 'Etiquetas'],
                 image: {
-                    src: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/organizado-juguetes.png',
+                    src: '/static/img/organizado-juguetes.png',
                     alt: 'Portalápices decorativo hecho con lata reciclada',
-                    thumbnail: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/organizado-juguetes.png'
+                    thumbnail: '/static/img/organizado-juguetes.png'
                 },
                 steps: [
                     'Limpiar y quitar etiquetas',
@@ -216,9 +216,9 @@ const wasteCrafts = {
                 title: 'Huerto Vertical',
                 materials: ['Botellas plásticas grandes', 'Cuerda resistente', 'Tijeras', 'Tierra para plantas'],
                 image: {
-                    src: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/huerto-vertical.png',
+                    src: '/static/img/huerto-vertical.png',
                     alt: 'Portalápices decorativo hecho con lata reciclada',
-                    thumbnail: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/huerto-vertical.png'
+                    thumbnail: '/static/img/huerto-vertical.png'
                 },
                 steps: [
                     'Cortar un lateral de la botella',
@@ -231,9 +231,9 @@ const wasteCrafts = {
                 title: 'Comedero para Pájaros',
                 materials: ['Botella plástica limpia', 'Palitos de madera', 'Cuerda', 'Tijeras'],
                 image: {
-                    src: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/comedero.jpg',
+                    src: '/static/img/comedero.jpg',
                     alt: 'Portalápices decorativo hecho con lata reciclada',
-                    thumbnail: 'https://s3-srd-project.s3.us-east-2.amazonaws.com/img/comedero.jpg'
+                    thumbnail: '/static/img/comedero.jpg'
                 },
                 steps: [
                     'Hacer pequeños agujeros para perchar',
