@@ -293,10 +293,10 @@ class EducationView(TemplateView):
         # Datos de videos educativos con URLs completas de S3
         context['education_videos'] = [
             {
-                'title': '16 Manualidades faciles con reciclaje',
+                'title': 'MACETEROS DE MARIPOSA 🦋',
                 'thumbnail_url': f'/static/img/manualidades-con-papel.jpg',
-                'video_url': f'https://drive.google.com/file/d/1lx_5CvCxLqhyLI1z-XhWrgZMjzGPZfz4/view?usp=sharing',
-                'duration': '2:30'
+                'video_url': f'/static/videos/16_manualidades_faciles.mp4',
+                'duration': '8:01'
             },
             {
                 'title': 'Manualidades con Residuos',
