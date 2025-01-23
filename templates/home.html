@@ -54,19 +54,19 @@
             {% else %}
                 {% with category_name=category.name|lower %}
                     {% if 'Botellas' in category_name %}
-                        <img src="{% static 'img/setUp_plastico.png' %}" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
+                        <img src="/static/img/setUp_carton.png" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
                     {% elif 'Carton' in category_name %}
-                        <img src="{% static 'img/setUp_carton.png' %}" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
+                        <img src="/static/img/setUp_carton.png" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
                     {% elif 'latas' in category_name %}
-                        <img src="{% static 'img/setUp_metal.png' %}" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
+                        <img src="/static/img/setUp_metal.png" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
                     {% elif 'Metal' in category_name %}
-                        <img src="{% static 'img/setUp_metal.png' %}" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
+                        <img src="/static/img/setUp_metal.png" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
                     {% elif 'Papel' in category_name %}
-                        <img src="{% static 'img/setUp_plastico.png' %}" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
+                        <img src="/static/img/setUp_plastico.png" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
                     {% elif 'Plastico' in category_name %}
-                        <img src="{% static 'img/setUp_plastico.png' %}" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
+                        <img src="/static/img/setUp_plastico.png" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
                     {% elif 'Vidrio' in category_name %}
-                        <img src="{% static 'img/setUp_vidrio.png' %}" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
+                        <img src="/static/img/setUp_vidrio.png" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
                     {% else %}
                         <div class="w-16 h-16 mb-4 mx-auto bg-green-100 rounded-full flex items-center justify-center">
                             <i class="fas fa-recycle text-green-600 text-2xl"></i>
@@ -104,27 +104,6 @@
                 </h4>
                 <ul class="instruction-steps text-green-800" id="modalInstructions"></ul>
             </div>
-        </div>
-    </div>
-</div>
-
-<div class="robot-container" id="robotMascot">
-    <div class="robot-body">
-        <button class="close-robot" onclick="hideRobot()">×</button>
-        <div class="robot-head">
-            <div class="robot-antenna"></div>
-            <div class="robot-eye left"></div>
-            <div class="robot-eye right"></div>
-            <div class="robot-mouth"></div>
-        </div>
-        <div class="message-bubble">
-            <div class="messages-container">
-                <!-- Los mensajes se mostrarán aquí -->
-            </div>
-            <div class="progress-dots"></div>
-            <button class="next-button" onclick="nextStep()">
-                Siguiente <i class="fas fa-chevron-right ml-1"></i>
-            </button>
         </div>
     </div>
 </div>
