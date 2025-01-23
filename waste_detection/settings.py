@@ -3,8 +3,6 @@ import os
 import dj_database_url
 from dotenv import load_dotenv
 from pathlib import Path
-import boto3
-from botocore.config import Config
 # Load environment variables
 load_dotenv()
 
@@ -16,8 +14,6 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'your-default-secret-key-for-dev')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
-
-USE_S3 = os.getenv('USE_S3', 'False') == 'True'
 
 # Allowed hosts should be set from environment variable
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,web-production-558dc.up.railway.app').split(',')
@@ -39,7 +35,6 @@ SECURE_SSL_REDIRECT = not DEBUG
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
 
-
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -54,9 +49,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'drf_yasg',
     'django_filters',
-    'storages',
     'corsheaders',
-    'django_backblaze_b2',
     
     # Local apps
     'apps.security',
@@ -148,57 +141,13 @@ CORS_ALLOWED_ORIGINS = [
 ]
 CORS_ALLOW_CREDENTIALS = True
 
-if USE_S3:
-    # AWS Settings
-    AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
-    AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
-    AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
-    AWS_DEFAULT_ACL = 'public-read'
-    AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
-    AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
-    AWS_QUERYSTRING_AUTH = False
-    
-    # S3 Static Settings
-    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-    STATIC_LOCATION = 'static'
-    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
-    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
-
-    # S3 Media Settings
-    MEDIA_LOCATION = 'media'
-    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/'
-    DEFAULT_FILE_STORAGE = 'waste_detection.storage_backends.MediaStorage'
-
-
-    # S3 CORS Configuration
-    AWS_S3_CORS_CONFIGURATION = {
-        'CORSRules': [{
-            'AllowedHeaders': ['*'],
-            'AllowedMethods': ['GET', 'POST', 'PUT', 'DELETE', 'HEAD'],
-            'AllowedOrigins': CORS_ALLOWED_ORIGINS,
-            'ExposeHeaders': ['ETag'],
-            'MaxAgeSeconds': 3000
-        }]
-    }
-
-    # Optional: S3 Security Settings
-    AWS_S3_SECURE_URLS = True
-    AWS_S3_ENCRYPTION = True
-    AWS_S3_SIGNATURE_VERSION = 's3v4'
-    AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME', 'us-east-1')
-    
-    # Configure boto3 to use the specified region
-    boto3_config = Config(
-        region_name=AWS_S3_REGION_NAME,
-        signature_version=AWS_S3_SIGNATURE_VERSION,
-    )
-else:
-    # Use default static/media settings for local development
-    STATIC_URL = '/static/'
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = BASE_DIR / 'media'
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Static and Media Files for Railway
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 # Logging configuration
 LOGGING = {
