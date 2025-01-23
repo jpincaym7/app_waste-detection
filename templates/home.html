@@ -53,19 +53,19 @@
                 <img src="{{ category.icon.url }}" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
             {% else %}
                 {% with category_name=category.name|lower %}
-                    {% if 'Botellas' in category_name %}
+                    {% if 'botellas' in category_name %}
                         <img src="/static/img/setUp_carton.png" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
-                    {% elif 'Carton' in category_name %}
+                    {% elif 'carton' in category_name %}
                         <img src="/static/img/setUp_carton.png" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
                     {% elif 'latas' in category_name %}
                         <img src="/static/img/setUp_metal.png" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
-                    {% elif 'Metal' in category_name %}
+                    {% elif 'metal' in category_name %}
                         <img src="/static/img/setUp_metal.png" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
-                    {% elif 'Papel' in category_name %}
+                    {% elif 'papel' in category_name %}
                         <img src="/static/img/setUp_plastico.png" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
-                    {% elif 'Plastico' in category_name %}
+                    {% elif 'plastico' in category_name %}
                         <img src="/static/img/setUp_plastico.png" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
-                    {% elif 'Vidrio' in category_name %}
+                    {% elif 'vidrio' in category_name %}
                         <img src="/static/img/setUp_vidrio.png" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
                     {% else %}
                         <div class="w-16 h-16 mb-4 mx-auto bg-green-100 rounded-full flex items-center justify-center">
