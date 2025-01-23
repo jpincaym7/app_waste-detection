@@ -295,7 +295,7 @@ class EducationView(TemplateView):
             {
                 'title': '16 Manualidades faciles con reciclaje',
                 'thumbnail_url': f'/static/img/manualidades-con-papel.jpg',
-                'video_url': f'/static/videos/16_manualidades_faciles.mp4',
+                'video_url': f'https://drive.google.com/file/d/1lx_5CvCxLqhyLI1z-XhWrgZMjzGPZfz4/view?usp=sharing',
                 'duration': '2:30'
             },
             {
