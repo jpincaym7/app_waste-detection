@@ -31,4 +31,6 @@ urlpatterns = [
     path('gamification/', include('apps.gamification.urls', namespace='gamification')),
     path("", HomeView.as_view(), name="home"),
     path('favicon.ico', RedirectView.as_view(url='/static/img/favicon.ico')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] 
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
