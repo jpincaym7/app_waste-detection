@@ -290,7 +290,7 @@ class EducationView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         
         # URL base de S3 donde están almacenados los archivos
-        S3_BASE_URL = 'https://s3-srd-project.s3.us-east-2.amazonaws.com'
+        S3_BASE_URL = '/static'
         
         # Datos de videos educativos con URLs completas de S3
         context['education_videos'] = [
