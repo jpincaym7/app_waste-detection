@@ -8,6 +8,8 @@ from django.core.paginator import Paginator
 from django.views.generic import TemplateView
 from django.views.decorators.http import require_http_methods
 from apps.gamification.models import TrashReport, ReportComment
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 def haversine(lat1, lon1, lat2, lon2):
     """Calculate the great circle distance between two points on Earth."""
@@ -281,7 +283,7 @@ def add_comment(request, report_pk):
         'user': comment.user.username
     })
     
-class EducationView(TemplateView):
+class EducationView(LoginRequiredMixin, TemplateView):
     template_name = 'education.html'
 
     def get_context_data(self, **kwargs):
@@ -293,21 +295,21 @@ class EducationView(TemplateView):
         # Datos de videos educativos con URLs completas de S3
         context['education_videos'] = [
             {
-                'title': 'MACETEROS DE MARIPOSA 🦋',
-                'thumbnail_url': f'/static/img/manualidades-con-papel.jpg',
-                'video_url': f'/static/videos/16_manualidades_faciles.mp4',
-                'duration': '8:01'
+                'title': '16 Manualidades faciles con reciclaje',
+                'thumbnail_url': f'{S3_BASE_URL}/img/manualidades-con-papel.jpg',
+                'video_url': f'{S3_BASE_URL}/videos/16_manualidades_faciles.mp4',
+                'duration': '2:30'
             },
             {
                 'title': 'Manualidades con Residuos',
-                'thumbnail_url': f'/static/img/reciclaje_craft.jpg',
-                'video_url': f'/static/videos/manualidades.mp4',
+                'thumbnail_url': f'{S3_BASE_URL}/img/reciclaje_craft.jpg',
+                'video_url': f'{S3_BASE_URL}/videos/manualidades.mp4',
                 'duration': '4:22'
             },
             {
                 'title': 'Importancia del Reciclaje',
-                'thumbnail_url': f'/static/img/importancia.jpg',
-                'video_url': f'/static/videos/como_reciclar_2.mp4',
+                'thumbnail_url': f'{S3_BASE_URL}/img/importancia.jpg',
+                'video_url': f'{S3_BASE_URL}/videos/como_reciclar_2.mp4',
                 'duration': '4:22'
             },
         ]
