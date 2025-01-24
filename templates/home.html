@@ -43,9 +43,9 @@
 {% endif %}
 
 <!-- Categories Section -->
-<section class="py-8 px-4 swipe-container">
+<section class="py-8 px-4 swipe-container cursor-grab overflow-x-auto">
     <h2 class="text-2xl font-bold mb-6">Categorías de Residuos</h2>
-    <div class="flex overflow-x-auto pb-4 gap-4 snap-x snap-mandatory">
+    <div class="flex pb-4 gap-4 snap-x snap-mandatory select-none">
         {% for category in categories %}
         <div class="category-card flex-shrink-0 w-64 bg-white rounded-xl shadow-md p-4 snap-center"
              onclick="showInstructions('{{ category.name }}', '{{ category.description }}', '{{ category.recycling_instructions|escapejs }}')">
