@@ -1,11 +1,19 @@
-// Bottom Navigation Handler
 document.addEventListener('DOMContentLoaded', function() {
     const trigger = document.getElementById('bottomNavTrigger');
     const bottomNav = document.getElementById('bottomNav');
     let isOpen = false;
 
     if (trigger && bottomNav) {
-        trigger.addEventListener('click', () => {
+        // Replace specific click event with a more general click/touch handler
+        trigger.addEventListener('click', toggleBottomNav);
+        
+        // Optional: Add touch event for mobile devices
+        trigger.addEventListener('touchstart', toggleBottomNav);
+
+        function toggleBottomNav(e) {
+            // Prevent default touch behavior
+            e.preventDefault();
+            
             isOpen = !isOpen;
             bottomNav.classList.toggle('active');
             trigger.innerHTML = isOpen ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
@@ -13,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Add rotation animation to the trigger button
             trigger.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
             trigger.style.transition = 'transform 0.3s ease';
-        });
+        }
 
         // Close menu when clicking outside
         document.addEventListener('click', (e) => {
