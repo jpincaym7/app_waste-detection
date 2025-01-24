@@ -12,8 +12,9 @@ from django.urls import reverse
 
 from apps.recycling_points.models import RecyclingPoint
 from apps.waste.models import WasteCategory
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-class RecyclingMapView(TemplateView):
+class RecyclingMapView(LoginRequiredMixin, TemplateView):
     """View for rendering the recycling points map page."""
     
     template_name = 'explore.html'
@@ -41,14 +42,22 @@ class RecyclingMapView(TemplateView):
 
 class RecyclingPointsAPIView(View):
     def dispatch(self, request, *args, **kwargs):
-        """Remove HTTPS check since Railway handles SSL"""
+        """Ensure HTTPS in production"""
+        if not settings.DEBUG and not request.is_secure():
+            # Redirect to HTTPS if accessed via HTTP
+            return JsonResponse({
+                'error': 'HTTPS is required',
+                'details': 'Please use HTTPS to access this API'
+            }, status=403)
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request) -> JsonResponse:
         try:
+            # Get all active recycling points
             points = RecyclingPoint.objects.filter(is_active=True)
-            formatted_points = []
             
+            # Format points for response
+            formatted_points = []
             for point in points:
                 if point.latitude and point.longitude:
                     try:
@@ -66,11 +75,11 @@ class RecyclingPointsAPIView(View):
                             )
                         })
                     except (ValueError, TypeError, AttributeError) as e:
+                        # Log error but continue processing other points
                         print(f"Error processing point {point.id}: {str(e)}")
                         continue
 
-            response = JsonResponse(formatted_points, safe=False)
-            return response
+            return JsonResponse(formatted_points, safe=False)
 
         except Exception as e:
             return JsonResponse({
