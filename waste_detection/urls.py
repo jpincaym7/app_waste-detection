@@ -14,14 +14,11 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-import os
 from django.contrib import admin
 from django.urls import include, path
 from waste_detection import settings
 from django.conf.urls.static import static
 from apps.waste.views.home import HomeView
-from django.views.generic.base import RedirectView
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,8 +26,7 @@ urlpatterns = [
     path('security/', include('apps.security.urls', namespace='security')),
     path('recycling_points/', include('apps.recycling_points.urls', namespace='recycling_points')),
     path('gamification/', include('apps.gamification.urls', namespace='gamification')),
-    path("", HomeView.as_view(), name="home"),
-    path('favicon.ico', RedirectView.as_view(url='/static/img/favicon.ico')),
-] 
+    path("", HomeView.as_view(), name="home")
+]
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
