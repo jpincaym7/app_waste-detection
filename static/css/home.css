@@ -106,3 +106,257 @@
 .instruction-steps {
     padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
 }
+
+/* Desktop-specific modal styles */
+@media (min-width: 1024px) {
+    .instruction-modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) !important;
+        width: 600px;
+        height: auto;
+        max-height: 80vh;
+        border-radius: 1rem;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        background: white;
+        z-index: 50;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden; /* Asegura que nada se salga del modal */
+    }
+
+    .instruction-modal.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* Hide mobile-specific elements on desktop */
+    .instruction-modal .modal-drag-handle {
+        display: none;
+    }
+
+    /* Contenedor principal del modal */
+    .instruction-modal .p-6 {
+        padding: 0 !important;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        max-height: 80vh;
+    }
+
+    /* Header del modal */
+    .instruction-modal .flex.justify-between {
+        padding: 1rem 1.5rem;
+        background: #047857;
+        margin: 0 !important;
+    }
+
+    .instruction-modal .text-xl {
+        color: white;
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .instruction-modal button.text-gray-500 {
+        color: white;
+        opacity: 0.8;
+        transition: opacity 0.2s;
+        padding: 0.5rem;
+    }
+
+    .instruction-modal button.text-gray-500:hover {
+        opacity: 1;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 0.375rem;
+    }
+
+    /* Contenido del modal */
+    .instruction-modal .space-y-4 {
+        padding: 1.5rem;
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    /* Description section */
+    .instruction-modal #modalDescription {
+        color: #4B5563;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        font-size: 1rem;
+    }
+
+    /* Instructions section */
+    .instruction-modal .bg-green-50 {
+        background-color: #ECFDF5;
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .instruction-modal .bg-green-50 h4 {
+        color: #065F46;
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    /* Fix for the instruction steps */
+    .instruction-modal .instruction-steps {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .instruction-modal .instruction-steps li {
+        position: relative;
+        padding-left: 1.5rem;
+        margin-bottom: 1rem;
+        color: #065F46;
+        line-height: 1.6;
+        font-size: 1rem;
+    }
+
+    .instruction-modal .instruction-steps li::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0.75rem;
+        width: 6px;
+        height: 6px;
+        background-color: #059669;
+        border-radius: 50%;
+    }
+
+    .instruction-modal .instruction-steps li:last-child {
+        margin-bottom: 0;
+    }
+
+    /* Enhanced backdrop for desktop */
+    .modal-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+        z-index: 40;
+    }
+
+    .modal-backdrop.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* Asegura que el contenido no se desborde */
+    .instruction-modal .modal-content {
+        max-height: calc(80vh - 4rem); /* Altura total menos el header */
+        overflow-y: auto;
+    }
+}
+
+/* Estilos existentes del robot... */
+.message-bubble {
+    background: #fff;
+    border: 2px solid #059669;
+    border-radius: 15px;
+    padding: 12px;
+    margin-top: 15px;
+    position: relative;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: showMessage 0.5s ease-out forwards 0.5s;
+}
+
+/* Nuevos estilos para el sistema de pasos */
+.messages-container {
+    min-height: 80px;
+    margin-bottom: 12px;
+}
+
+.message {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease-out;
+}
+
+.message.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.progress-dots {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 10px;
+}
+
+.dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #E2E8F0;
+    transition: all 0.3s ease;
+}
+
+.dot.active {
+    width: 20px;
+    background-color: #059669;
+    border-radius: 3px;
+}
+
+.next-button {
+    background-color: transparent;
+    color: #059669;
+    border: none;
+    padding: 4px 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    transition: all 0.3s ease;
+}
+
+.next-button:hover {
+    color: #047857;
+}
+
+/* Mejoras para móvil */
+@media (max-width: 640px) {
+    .robot-container {
+        width: 85%;
+        max-width: 300px;
+        bottom: 100px;
+        right: 50%;
+        transform: translateX(50%);
+    }
+    
+    .message-bubble {
+        padding: 10px;
+    }
+}
+
+/* Animación para los mensajes */
+@keyframes messageIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
