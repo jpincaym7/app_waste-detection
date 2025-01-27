@@ -54,7 +54,7 @@
             {% else %}
                 {% with category_name=category.name|lower %}
                     {% if 'botellas' in category_name %}
-                        <img src="/static/img/setUp_carton.png" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
+                        <img src="/static/img/setUp_plastico.png" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
                     {% elif 'carton' in category_name %}
                         <img src="/static/img/setUp_carton.png" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
                     {% elif 'latas' in category_name %}
@@ -62,7 +62,7 @@
                     {% elif 'metal' in category_name %}
                         <img src="/static/img/setUp_metal.png" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
                     {% elif 'papel' in category_name %}
-                        <img src="/static/img/setUp_plastico.png" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
+                        <img src="/static/img/setUp_carton.png" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
                     {% elif 'plastico' in category_name %}
                         <img src="/static/img/setUp_plastico.png" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
                     {% elif 'vidrio' in category_name %}
